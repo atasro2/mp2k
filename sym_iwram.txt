@@ -1,0 +1,48 @@
+data/SoundDat.o(.bss);
+. = ALIGN(4);
+data/SoundDat.o(COMMON);
+. = ALIGN(4);
+
+/* M4A stuff start */
+asm/m4a_mixer.o(COMMON);
+. = ALIGN(4);
+
+m4a_sound = .; . += 0xFB0;
+ExtMPlyJmpTbl = .; . += 0x90;
+m4a_cgbchn = .; . += 0x100;
+/* M4A stuff end */
+
+c_bit = .; . += 0x4;
+p_rev = .; . += 0x4;
+p_bit = .; . += 0x4;
+c_mvg = .; . += 0x4;
+AvrLinC = .; . += 0x4;
+c_mvo = .; . += 0x4;
+w_midibuf = .; . += 0x4;
+vcount = .; . += 0x4;
+Cont = .; . += 0x4;
+xcmdn = .; . += 0x4;
+MaxLin = .; . += 0x4;
+c_mch = .; . += 0x4;
+AvrLinT = .; . += 0x4;
+r_midibuf = .; . += 0x4;
+Trg = .; . += 0x4;
+c_rev = .; . += 0x4;
+sysex = .; . += 0x4;
+MaxChnC = .; . += 0xC;
+c_song = .; . += 0x10;
+c_fre = .; . += 0x4;
+p_mch = .; . += 0xC;
+midibuf = .; . += 0x100;
+IntrMainBuf = .; . += 0x800;
+MaxChn = .; . += 0x4;
+c_mpr = .; . += 0xC;
+midi_ma = .; . += 0x40;
+midi_ta = .; . += 0x500;
+runst = .; . += 0x4;
+KeyRep = .; . += 0xC;
+OamBak = .; . += 0x400;
+p_song = .; . += 0x10;
+p_fre = .; . += 0x10;
+BgBak = .; . += 0x800;
+CurtCurs = .; . += 0x10;
