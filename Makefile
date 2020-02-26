@@ -67,8 +67,15 @@ GCC_VER := $(shell $(GCC) -dumpversion)
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
-$(ELF): %.elf: $(OBJS)
-	$(LD) -T ld_script.txt -Map $*.map -o $@ $(OBJS) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb -L /usr/lib/arm-none-eabi/lib/thumb -lgcc -lc
+ld_script.ld: ld_script.txt sym_iwram.ld sym_ewram.ld
+	cp $< $@ 
+sym_iwram.ld: sym_iwram.txt
+	cp $< $@ 
+sym_ewram.ld: sym_ewram.txt
+	cp $< $@ 
+
+$(ELF): %.elf: $(OBJS) ld_script.ld
+	$(LD) -T ld_script.ld -Map $*.map -o $@ $(OBJS) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb -L /usr/lib/arm-none-eabi/lib/thumb -lgcc -lc
 	$(GBAFIX) -m01 --silent $@
 
 $(ASM_BUILDDIR)/%.o: $(ASM_SUBDIR)/%.s $$(asm_dep)

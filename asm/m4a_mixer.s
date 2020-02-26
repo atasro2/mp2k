@@ -3,6 +3,8 @@
 @ created by ~ipatix~
 @ revision 2.1
 
+    .comm m4a_sound, 0x350 + PCM_DMA_BUF * 2
+
     /* globals */
 	.global	main_mixer
 	.global	main_mixer_end
@@ -104,16 +106,14 @@
 @*********** IF MP2K
 .if USED_GAME==GAME_MP2K
 
-	.equ	ALLOW_PAUSE, 0
-	.equ	DMA_FIX, 0
-	.equ	ENABLE_DECOMPRESSION, 0
-	.equ	PREVENT_CLIP, 0
+	.equ	DMA_FIX, 1
+	.equ	PREVENT_CLIP, 1
 
 .endif
 
 	.thumb
 
-    .comm SoundMainBuf, 0x8C0
+    .comm SoundMainBuf, 0xC00
     .comm hq_buffer, FRAME_LENGTH_42048 * 4
 
     .global SoundMainRAM
@@ -248,20 +248,10 @@ mixer_entry:
         MOVS R6, #FLAG_CHN_ATTACK		@ set the channel status to ATTACK
         MOVS R0, R3						@ R0 = CHN_WAVE_OFFSET
         ADD	R0, #WAVE_DATA				@ R0 = wave data offset
-
-        /* Pokemon games seem to init channels differently than other m4a games */
-    .if ALLOW_PAUSE==0
+        
         STR	R0, [R4, #CHN_POSITION_ABS]
         LDR	R0, [R3, #WAVE_LENGTH]
-        STR	R0, [R4, #CHN_POSITION_REL] 
-    .else
-        LDR	R1, [R4, #CHN_POSITION_REL]
-        ADD	R0, R0, R1
-        STR	R0, [R4, #CHN_POSITION_ABS]
-        LDR	R0, [R3, #WAVE_LENGTH]
-        SUB	R0, R0, R1
         STR	R0, [R4, #CHN_POSITION_REL]
-    .endif
 
         MOVS R5, #0						@ initial envelope = #0
         STRB R5, [R4, #CHN_ADSR_LEVEL]
@@ -878,7 +868,7 @@ MOV	R11, #0xFF
 
 MOV	R12, #0xFFFFFFFF
 MOV	R12, R12, LSL#14
-MOV	R7, #0x630
+MOV	R7, #PCM_DMA_BUF
 
 downsampler_loop:
 
@@ -950,7 +940,7 @@ ORR	R0, R0, R1, LSL#8
 ORR	R0, R0, R2, LSL#16
 ORR	R0, R0, R3, LSL#24
 
-STR	R4, [R9, #0x630]
+STR	R4, [R9, #PCM_DMA_BUF]
 STR	R0, [R9], #4
 
 SUBS	R8, #4

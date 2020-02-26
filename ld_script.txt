@@ -3,13 +3,13 @@ SECTIONS {
     ewram (NOLOAD) :
     ALIGN(4)
     {
-        INCLUDE "sym_ewram.txt"
+        INCLUDE "sym_ewram.ld"
     }
     . = 0x3000000;
     iwram (NOLOAD) :
     ALIGN(4)
     {
-        INCLUDE "sym_iwram.txt"
+        INCLUDE "sym_iwram.ld"
     }
     . = 0x8000000;
     .text :

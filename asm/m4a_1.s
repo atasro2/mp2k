@@ -77,7 +77,7 @@ _08000250: .4byte 0x68736D53
 _08000254: .4byte SoundMainBuf+1
 _08000258: .4byte 0x04000006
 _0800025C: .4byte 0x00000350
-_08000260: .4byte 0x00000630
+_08000260: .4byte PCM_DMA_BUF
 
 	non_word_aligned_thumb_func_start .call_r3
 .call_r3: @ 0x08000602

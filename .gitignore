@@ -57,6 +57,7 @@ Temporary Items
 *.o
 *.dump
 *.bin
+*.ld
 sound/songs/midi/*.s
 ddump
 build/
