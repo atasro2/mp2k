@@ -11,7 +11,7 @@ SCANINC := tools/scaninc/scaninc
 PREPROC := tools/preproc/preproc
 ASFLAGS := -mcpu=arm7tdmi
 
-OBJ_DIR := build/mugi
+OBJ_DIR := build/mp2k
 
 C_SUBDIR = src
 ASM_SUBDIR = asm
