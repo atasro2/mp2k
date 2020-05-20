@@ -1,12 +1,3 @@
-data/SoundDat.o(.bss);
-. = ALIGN(4);
-data/SoundDat.o(COMMON);
-. = ALIGN(4);
-
-/* M4A stuff start */
-asm/m4a_mixer.o(COMMON);
-. = ALIGN(4);
-
 ExtMPlyJmpTbl = .; . += 0x90;
 m4a_cgbchn = .; . += 0x100;
 /* M4A stuff end */
