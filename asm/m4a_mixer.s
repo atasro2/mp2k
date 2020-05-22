@@ -1,9 +1,9 @@
 .include "asm/macros.inc"
+.include "constants/m4a_constants.inc"
 
 @ created by ~ipatix~
 @ revision 2.1
-
-    .comm m4a_sound, 0x350 + PCM_DMA_BUF * 2
+.text
 
     /* globals */
 	.global	main_mixer
@@ -112,9 +112,6 @@
 .endif
 
 	.thumb
-
-    .comm SoundMainBuf, 0xC00
-    .comm hq_buffer, FRAME_LENGTH_42048 * 4
 
     .global SoundMainRAM
 SoundMainRAM:
@@ -868,7 +865,7 @@ MOV	R11, #0xFF
 
 MOV	R12, #0xFFFFFFFF
 MOV	R12, R12, LSL#14
-MOV	R7, #PCM_DMA_BUF
+MOV	R7, #PCM_DMA_BUF_SIZE
 
 downsampler_loop:
 
@@ -940,7 +937,7 @@ ORR	R0, R0, R1, LSL#8
 ORR	R0, R0, R2, LSL#16
 ORR	R0, R0, R3, LSL#24
 
-STR	R4, [R9, #PCM_DMA_BUF]
+STR	R4, [R9, #PCM_DMA_BUF_SIZE]
 STR	R0, [R9], #4
 
 SUBS	R8, #4

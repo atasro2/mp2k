@@ -1,7 +1,3 @@
-ExtMPlyJmpTbl = .; . += 0x90;
-m4a_cgbchn = .; . += 0x100;
-/* M4A stuff end */
-
 c_bit = .; . += 0x4;
 p_rev = .; . += 0x4;
 p_bit = .; . += 0x4;

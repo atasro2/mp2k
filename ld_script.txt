@@ -19,6 +19,8 @@ SECTIONS {
     ALIGN(4)
     {
         asm/crt0.o(.text);
+        src/m4a.o(.text);
+        asm/m4a.o(.text);
         asm/*.o(.text);
         src/*.o(.text);
         *libgcc.a:*.o(.text*);

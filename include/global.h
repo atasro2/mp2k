@@ -1,6 +1,0 @@
-#ifndef GUARD_GLOBAL_H
-#define GUARD_GLOBAL_H
-
-#define SEX_NUMBER 69
-
-#endif//GUARD_GLOBAL_H

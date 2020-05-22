@@ -17,7 +17,7 @@ start_vector:
 	ldr r1, =0x03007FFC
 	add r0, pc, #0x18
 	str r0, [r1]
-	ldr r1, =Dick+1
+	ldr r1, =AgbMain+1
 	mov lr, pc
 	bx r1
 	b start_vector

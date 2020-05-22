@@ -47,9 +47,10 @@ SUBDIRS  := $(sort $(dir $(OBJS)))
 
 $(shell mkdir -p $(SUBDIRS))
 
-NAME := SoundMon
+NAME := mp2k
 ROM := $(NAME).gba
 ELF := $(NAME).elf
+MAP := $(NAME).map
 
 # Clear the default suffixes
 .SUFFIXES:
@@ -68,7 +69,9 @@ compare: $(ROM)
 	$(SHA1SUM) rom.sha1
 
 clean:
-	rm -f $(ROM) $(ELF) $(OBJS)
+	rm -f $(ROM) $(ELF) $(MAP) $(OBJS)
+	rm -f sound/direct_sound_samples/*.bin
+
 include songs.mk
 
 sound/%.bin: sound/%.aif ; $(AIF) $< $@
@@ -81,15 +84,16 @@ CPPFLAGS := -iquote include
 
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
+	$(GBAFIX) -p --silent $@
 
-$(OBJ_DIR)/ld_script.ld: ld_script.txt sym_iwram.ld
+$(OBJ_DIR)/ld_script.ld: ld_script.txt
 	cd $(OBJ_DIR) && sed "s#tools/#../../tools/#g" ../../ld_script.txt > ld_script.ld
 
 $(OBJ_DIR)/sym_iwram.ld: sym_iwram.txt
 	cp $< $@ 
 
-$(ELF): %.elf: $(OBJS) $(OBJ_DIR)/ld_script.ld
-	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$*.map -o ../../$@ $(OBJS_REL) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb -L /usr/lib/arm-none-eabi/lib/thumb -lgcc -lc
+$(ELF): %.elf: $(OBJS) $(OBJ_DIR)/ld_script.ld $(OBJ_DIR)/sym_iwram.ld
+	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$(MAP) -o ../../$@ $(OBJS_REL) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb -L /usr/lib/arm-none-eabi/lib/thumb -lgcc -lc
 	$(GBAFIX) -m01 --silent $@
 
 ifeq ($(NODEP),1)

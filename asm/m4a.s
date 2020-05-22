@@ -1,6 +1,9 @@
 .include "asm/macros.inc"
+.include "constants/m4a_constants.inc"
 
 .syntax unified
+
+.text
 
 	THUMB_FUNC_START MidiKey2fr
 MidiKey2fr: @ 0x08000DEC
@@ -137,14 +140,14 @@ _08000EDE:
 	bx r0
 	.align 2, 0
 _08000EE4: .4byte SoundMainRAM+1
-_08000EE8: .4byte SoundMainBuf
+_08000EE8: .4byte SoundMainRAM_Buffer
 _08000EEC: .4byte 0x04000300
-_08000EF0: .4byte m4a_sound
-_08000EF4: .4byte m4a_cgbchn
+_08000EF0: .4byte gSoundInfo
+_08000EF4: .4byte gCgbChans
 _08000EF8: .4byte 0x009CD800
 _08000EFC: .4byte 0x00000004
-_08000F00: .4byte mplay_table
-_08000F04: .4byte m4a_memacc_area
+_08000F00: .4byte gMPlayTable
+_08000F04: .4byte gMPlayMemAccArea
 
 	THUMB_FUNC_START m4aSoundMain
 m4aSoundMain: @ 0x08000F08
@@ -174,7 +177,7 @@ m4aSongNumStart: @ 0x08000F14
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08000F38: .4byte mplay_table
+_08000F38: .4byte gMPlayTable
 _08000F3C: .4byte song_table
 
 	THUMB_FUNC_START m4aSongNumStartOrChange
@@ -200,7 +203,7 @@ m4aSongNumStartOrChange: @ 0x08000F40
 	bl MPlayStart_rev01
 	b _08000F88
 	.align 2, 0
-_08000F6C: .4byte mplay_table
+_08000F6C: .4byte gMPlayTable
 _08000F70: .4byte song_table
 _08000F74:
 	ldr r2, [r1, #4]
@@ -240,7 +243,7 @@ m4aSongNumStartOrContinue: @ 0x08000F8C
 	bl MPlayStart_rev01
 	b _08000FDC
 	.align 2, 0
-_08000FB8: .4byte mplay_table
+_08000FB8: .4byte gMPlayTable
 _08000FBC: .4byte song_table
 _08000FC0:
 	ldr r2, [r1, #4]
@@ -284,7 +287,7 @@ _08001006:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0800100C: .4byte mplay_table
+_0800100C: .4byte gMPlayTable
 _08001010: .4byte song_table
 
 	THUMB_FUNC_START m4aSongNumContinue
@@ -311,7 +314,7 @@ _0800103A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08001040: .4byte mplay_table
+_08001040: .4byte gMPlayTable
 _08001044: .4byte song_table
 
 	THUMB_FUNC_START m4aMPlayAllStop
@@ -337,7 +340,7 @@ _08001066:
 	bx r0
 	.align 2, 0
 _0800106C: .4byte 0x00000004
-_08001070: .4byte mplay_table
+_08001070: .4byte gMPlayTable
 
 	THUMB_FUNC_START m4aMPlayContinue
 m4aMPlayContinue: @ 0x08001074
@@ -370,7 +373,7 @@ _0800109E:
 	bx r0
 	.align 2, 0
 _080010A4: .4byte 0x00000004
-_080010A8: .4byte mplay_table
+_080010A8: .4byte gMPlayTable
 
 	THUMB_FUNC_START m4aMPlayFadeOut
 m4aMPlayFadeOut: @ 0x080010AC
@@ -573,7 +576,7 @@ _08001218: .4byte 0x04000080
 _0800121C: .4byte 0x04000063
 _08001220: .4byte 0x03007FF0
 _08001224: .4byte 0x68736D53
-_08001228: .4byte ExtMPlyJmpTbl
+_08001228: .4byte gMPlayJumpTable
 _0800122C: .4byte ply_memacc+1
 _08001230: .4byte ply_lfos_rev01+1
 _08001234: .4byte ply_mod_rev01+1
@@ -603,7 +606,7 @@ ClearChain_rev: @ 0x08001268
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08001278: .4byte ExtMPlyJmpTbl+0x88
+_08001278: .4byte gMPlayJumpTable+0x88
 
 	THUMB_FUNC_START Clear64byte_rev
 Clear64byte_rev: @ 0x0800127C
@@ -614,7 +617,7 @@ Clear64byte_rev: @ 0x0800127C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0800128C: .4byte ExtMPlyJmpTbl+0x8C
+_0800128C: .4byte gMPlayJumpTable+0x8C
 
 	THUMB_FUNC_START SoundInit_rev01
 SoundInit_rev01: @ 0x08001290
@@ -671,7 +674,7 @@ _080012BA:
 	ldr r0, _08001368
 	str r0, [r1]
 	adds r1, #8
-	ldr r2, =PCM_DMA_BUF+0x350
+	ldr r2, =PCM_DMA_BUF_SIZE+0x350
 	adds r0, r5, r2
 	str r0, [r1]
 	adds r1, #4
@@ -724,7 +727,7 @@ _08001370: .4byte 0x03007FF0
 _08001374: .4byte 0x050003EC
 _08001378: .4byte ply_note_rev01+1
 _0800137C: .4byte DummyFunc_rev+1
-_08001380: .4byte ExtMPlyJmpTbl
+_08001380: .4byte gMPlayJumpTable
 _08001384: .4byte 0x68736D53
 
 	THUMB_FUNC_START SampFreqSet_rev01
@@ -745,7 +748,7 @@ SampFreqSet_rev01: @ 0x08001388
 	adds r0, r0, r1
 	ldrh r5, [r0]
 	str r5, [r4, #0x10]
-	ldr r0, =PCM_DMA_BUF
+	ldr r0, =PCM_DMA_BUF_SIZE
 	adds r1, r5, #0
 	bl __divsi3
 	strb r0, [r4, #0xb]
@@ -2759,7 +2762,7 @@ _08002240:
 	bl _call_via_r2
 	b _0800225A
 	.align 2, 0
-_08002250: .4byte ExtMPlyJmpTbl+4
+_08002250: .4byte gMPlayJumpTable+4
 _08002254:
 	ldr r0, [r6, #0x40]
 	adds r0, #4
@@ -2795,7 +2798,7 @@ ply_xxx: @ 0x08002280
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08002290: .4byte ExtMPlyJmpTbl
+_08002290: .4byte gMPlayJumpTable
 
 	THUMB_FUNC_START ply_xwave
 ply_xwave: @ 0x08002294

@@ -382,7 +382,7 @@ _08002698:
 	.align 2, 0
 _080026D0: .4byte CurtCurs
 _080026D4: .4byte p_song
-_080026D8: .4byte mplay_table
+_080026D8: .4byte gMPlayTable
 _080026DC: .4byte song_table
 _080026E0:
 	ldrb r1, [r6]
@@ -730,7 +730,7 @@ _0800298C: .4byte c_fre
 _08002990: .4byte Cont
 _08002994: .4byte p_bit
 _08002998: .4byte c_bit
-_0800299C: .4byte m4a_sound
+_0800299C: .4byte gSoundInfo
 _080029A0: .4byte MaxChn
 _080029A4: .4byte MaxChnC
 _080029A8: .4byte 0x04000006
@@ -1745,7 +1745,7 @@ _08003184: .4byte c_song
 _08003188: .4byte app_song_table
 _0800318C: .4byte song_table
 _08003190: .4byte p_song
-_08003194: .4byte mplay_table
+_08003194: .4byte gMPlayTable
 _08003198: .4byte vcount
 _0800319C: .4byte gUnknown_0800552C
 _080031A0:
@@ -1801,7 +1801,7 @@ _080031F6:
 	bx r0
 	.align 2, 0
 _08003204: .4byte gUnknown_08005530
-_08003208: .4byte mplay_table
+_08003208: .4byte gMPlayTable
 
 	THUMB_FUNC_START ModeWrite
 ModeWrite: @ 0x0800320C
@@ -1877,7 +1877,7 @@ _08003292:
 	bx r0
 	.align 2, 0
 _08003298: .4byte p_rev
-_0800329C: .4byte m4a_sound
+_0800329C: .4byte gSoundInfo
 _080032A0: .4byte c_rev
 _080032A4: .4byte p_mch
 _080032A8: .4byte c_mch
@@ -2072,7 +2072,7 @@ _0800343C:
 	bx r0
 	.align 2, 0
 _0800344C: .4byte pbymidi_swi
-_08003450: .4byte m4a_sound
+_08003450: .4byte gSoundInfo
 _08003454: .4byte midi_ma
 _08003458: .4byte midi_ta
 _0800345C: .4byte app_vgrp_table
@@ -2352,7 +2352,7 @@ _0800365A:
 	ldr r2, [r1, #0x74]
 	b _080039C4
 	.align 2, 0
-_08003668: .4byte m4a_sound
+_08003668: .4byte gSoundInfo
 _0800366C: .4byte midi_ma
 _08003670:
 	mov r2, r8
@@ -2372,7 +2372,7 @@ _08003670:
 	bl _call_via_r3
 	b _080039E8
 	.align 2, 0
-_08003694: .4byte m4a_sound
+_08003694: .4byte gSoundInfo
 _08003698: .4byte midi_ma
 _0800369C:
 	subs r0, r4, #1
@@ -2525,7 +2525,7 @@ _080038B0:
 	ldr r2, [r1, #0x4c]
 	b _080039C4
 	.align 2, 0
-_080038C0: .4byte m4a_sound
+_080038C0: .4byte gSoundInfo
 _080038C4: .4byte midi_ma
 _080038C8:
 	mov r0, sp
@@ -2537,7 +2537,7 @@ _080038C8:
 	ldr r2, [r1, #0x34]
 	b _080039C4
 	.align 2, 0
-_080038D8: .4byte m4a_sound
+_080038D8: .4byte gSoundInfo
 _080038DC: .4byte midi_ma
 _080038E0:
 	mov r0, sp
@@ -2549,7 +2549,7 @@ _080038E0:
 	ldr r2, [r1, #0x38]
 	b _080039C4
 	.align 2, 0
-_080038F0: .4byte m4a_sound
+_080038F0: .4byte gSoundInfo
 _080038F4: .4byte midi_ma
 _080038F8:
 	mov r0, sp
@@ -2561,7 +2561,7 @@ _080038F8:
 	ldr r2, [r1, #0x40]
 	b _080039C4
 	.align 2, 0
-_08003908: .4byte m4a_sound
+_08003908: .4byte gSoundInfo
 _0800390C: .4byte midi_ma
 _08003910:
 	mov r0, sp
@@ -2573,7 +2573,7 @@ _08003910:
 	ldr r2, [r1, #0x44]
 	b _080039C4
 	.align 2, 0
-_08003920: .4byte m4a_sound
+_08003920: .4byte gSoundInfo
 _08003924: .4byte midi_ma
 _08003928:
 	mov r0, sp
@@ -2585,7 +2585,7 @@ _08003928:
 	ldr r2, [r1, #0x50]
 	b _080039C4
 	.align 2, 0
-_08003938: .4byte m4a_sound
+_08003938: .4byte gSoundInfo
 _0800393C: .4byte midi_ma
 _08003940:
 	mov r0, sp
@@ -2597,7 +2597,7 @@ _08003940:
 	ldr r2, [r1, #0x5c]
 	b _080039C4
 	.align 2, 0
-_08003950: .4byte m4a_sound
+_08003950: .4byte gSoundInfo
 _08003954: .4byte midi_ma
 _08003958:
 	mov r0, sp
@@ -2609,7 +2609,7 @@ _08003958:
 	ldr r2, [r1, #0x48]
 	b _080039C4
 	.align 2, 0
-_08003968: .4byte m4a_sound
+_08003968: .4byte gSoundInfo
 _0800396C: .4byte midi_ma
 _08003970:
 	mov r0, sp
@@ -2621,7 +2621,7 @@ _08003970:
 	ldr r2, [r1, #0x24]
 	b _080039C4
 	.align 2, 0
-_08003980: .4byte m4a_sound
+_08003980: .4byte gSoundInfo
 _08003984: .4byte midi_ma
 _08003988:
 	ldr r0, _08003990
@@ -2645,7 +2645,7 @@ _08003994:
 	b _080039C4
 	.align 2, 0
 _080039AC: .4byte xcmdn
-_080039B0: .4byte m4a_sound
+_080039B0: .4byte gSoundInfo
 _080039B4: .4byte midi_ma
 _080039B8:
 	mov r0, sp
@@ -2659,7 +2659,7 @@ _080039C4:
 	bl _call_via_r2
 	b _080039E8
 	.align 2, 0
-_080039CC: .4byte m4a_sound
+_080039CC: .4byte gSoundInfo
 _080039D0: .4byte midi_ma
 _080039D4:
 	mov r0, sp
@@ -2708,7 +2708,7 @@ _08003A12:
 	strb r0, [r6, #0x1c]
 	b _08003A7A
 	.align 2, 0
-_08003A2C: .4byte m4a_sound
+_08003A2C: .4byte gSoundInfo
 _08003A30: .4byte midi_ma
 _08003A34:
 	ldrb r4, [r6, #0x1a]
@@ -2804,7 +2804,7 @@ _08003AC4:
 	bl _call_via_r1
 	b _08003B60
 	.align 2, 0
-_08003AE0: .4byte m4a_sound
+_08003AE0: .4byte gSoundInfo
 _08003AE4:
 	movs r7, #7
 	ldrb r4, [r5, #1]
@@ -2929,4 +2929,4 @@ _08003BBC:
 	.align 2, 0
 _08003BC4: .4byte pbymidi_swi
 _08003BC8: .4byte midi_ma
-_08003BCC: .4byte m4a_sound
+_08003BCC: .4byte gSoundInfo

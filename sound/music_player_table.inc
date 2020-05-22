@@ -1,19 +1,20 @@
-	.comm	m4a_mplay000, 64
-	.lcomm	m4a_track000, 80*10
-	.comm	m4a_mplay001, 64
-	.lcomm	m4a_track001, 80*3
-	.comm	m4a_mplay002, 64
-	.lcomm	m4a_track002, 80*9
-	.comm	m4a_mplay003, 64
-	.lcomm	m4a_track003, 80*1
+	.equ	BGM_TRACK_CHANNELS, 10
+	.equ	SE1_TRACK_CHANNELS, 3
+	.equ	SE2_TRACK_CHANNELS, 9
+	.equ	SE3_TRACK_CHANNELS, 1
+
+	.comm	gMPlayTrack_BGM, 80*BGM_TRACK_CHANNELS
+	.comm	gMPlayTrack_SE1, 80*SE1_TRACK_CHANNELS
+	.comm	gMPlayTrack_SE2, 80*SE2_TRACK_CHANNELS
+	.comm	gMPlayTrack_SE3, 80*SE3_TRACK_CHANNELS
 
 	.global	__total_mplay_n
 	.equ	__total_mplay_n, 4
 
 	.align 2
-	.global	mplay_table
-mplay_table:
-	music_player m4a_mplay000, m4a_track000, 10, 0
-	music_player m4a_mplay001, m4a_track001,  3, 1
-	music_player m4a_mplay002, m4a_track002,  9, 1
-	music_player m4a_mplay003, m4a_track003,  1, 0
+	.global	gMPlayTable
+gMPlayTable:
+	music_player gMPlayInfo_BGM, gMPlayTrack_BGM, 10, 0
+	music_player gMPlayInfo_SE1, gMPlayTrack_SE1,  3, 1
+	music_player gMPlayInfo_SE2, gMPlayTrack_SE2,  9, 1
+	music_player gMPlayInfo_SE3, gMPlayTrack_SE3,  1, 0

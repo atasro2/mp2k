@@ -11,7 +11,5 @@
 	
 	.global	__total_song_n
 	.equ	__total_song_n, (dummy_song_header - song_table) / 8
-	
-	.comm	m4a_memacc_area, 16
 
 	.end

@@ -1,6 +1,3 @@
-	
-	.equ PCM_DMA_BUF, 0x1340
-	
 	.macro song label, music_player, unknown
 	.4byte \label
 	.2byte \music_player
