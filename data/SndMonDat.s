@@ -685,9 +685,6 @@ app_vgrp_table:
 	.global	pbymidi_tm
 	.equ	pbymidi_tm, 150
 
-	.global	seg_rodata_top
-	.equ	seg_rodata_top,.
-
 	.section .rodata.end
 	.global	seg_rodata_end
 	.equ	seg_rodata_end,.

@@ -379,15 +379,15 @@ extern char gMaxLines[];
 u32 umul3232H32(u32 multiplier, u32 multiplicand);
 void SoundMain(void);
 void SoundMainBTM(void);
-void TrackStop(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
+void TrackStop_rev01(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
 void MPlayMain(void);
-void RealClearChain(void *x);
+void ClearChain(void *x);
 
 void MPlayContinue(struct MusicPlayerInfo *mplayInfo);
 void MPlayStart(struct MusicPlayerInfo *mplayInfo, struct SongHeader *songHeader);
 void m4aMPlayStop(struct MusicPlayerInfo *mplayInfo);
-void FadeOutBody(struct MusicPlayerInfo *mplayInfo);
-void TrkVolPitSet(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
+void FadeOutBody_rev01(struct MusicPlayerInfo *mplayInfo);
+void TrkVolPitSet_rev01(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
 void MPlayFadeOut(struct MusicPlayerInfo *mplayInfo, u16 speed);
 void ClearChain(void *x);
 void Clear64byte(void *addr);
@@ -401,7 +401,7 @@ void CgbModVol(struct CgbChannel *chan);
 u32 MidiKeyToCgbFreq(u8, u8, u8);
 void DummyFunc(void);
 void MPlayJumpTableCopy(void **mplayJumpTable);
-void SampleFreqSet(u32 freq);
+void SampleFreqSet_rev01(u32 freq);
 void m4aSoundVSyncOn(void);
 void m4aSoundVSyncOff(void);
 
@@ -440,14 +440,14 @@ void ply_vol(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_pan(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_bend(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_bendr(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
-void ply_lfos(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_lfos_rev01(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_lfodl(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
-void ply_mod(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_mod_rev01(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_modt(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_tune(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_port(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_xcmd(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
-void ply_endtie(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_endtie_rev01(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_note(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 
 // extended sound command handler functions

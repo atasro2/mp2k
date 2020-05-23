@@ -93,7 +93,7 @@ $(OBJ_DIR)/sym_iwram.ld: sym_iwram.txt
 	cp $< $@ 
 
 $(ELF): %.elf: $(OBJS) $(OBJ_DIR)/ld_script.ld $(OBJ_DIR)/sym_iwram.ld
-	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$(MAP) -o ../../$@ $(OBJS_REL) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb -L /usr/lib/arm-none-eabi/lib/thumb -lgcc -lc
+	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$(MAP) -o ../../$@ $(OBJS_REL) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb/nofp -L /usr/lib/arm-none-eabi/lib/thumb/nofp -lgcc -lc
 	$(GBAFIX) -m01 --silent $@
 
 ifeq ($(NODEP),1)

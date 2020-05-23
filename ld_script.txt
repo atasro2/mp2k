@@ -19,8 +19,12 @@ SECTIONS {
     ALIGN(4)
     {
         asm/crt0.o(.text);
+        seg_m4aLib_top = .;
         src/m4a.o(.text);
         asm/m4a.o(.text);
+        asm/m4a_1.o(.text);
+        asm/m4a_mixer.o(.text);
+        asm/main.o(.text);
         asm/*.o(.text);
         src/*.o(.text);
         *libgcc.a:*.o(.text*);
@@ -29,10 +33,11 @@ SECTIONS {
     .rodata :
     ALIGN(4)
     {
-        asm/crt0.o(.rodata);
-        data/data.o(.data);
-        data/SndMonDat.o(.rodata);
-        data/SoundDat.o(.rodata);
+        seg_rodata_top = .;
+        src/*.o(.data);
+        src/*.o(.rodata);
+        data/*.o(.data);
+        data/*.o(.rodata);
     } =0
     
     song_data :

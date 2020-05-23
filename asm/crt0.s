@@ -43,10 +43,3 @@ intr_main:
 
 	.pool
 
-	.global seg_m4aLib_top
-seg_m4aLib_top:
-
-	.section .rodata
-	.global seg_m4aLib_rodata_top
-seg_m4aLib_rodata_top:
-	.4byte 0

@@ -5,57 +5,6 @@
 
 .text
 
-	THUMB_FUNC_START MidiKey2fr
-MidiKey2fr: @ 0x08000DEC
-	push {r4, r5, r6, r7, lr}
-	mov ip, r0
-	lsls r1, r1, #0x18
-	lsrs r6, r1, #0x18
-	lsls r7, r2, #0x18
-	cmp r6, #0xb2
-	bls _08000E00
-	movs r6, #0xb2
-	movs r7, #0xff
-	lsls r7, r7, #0x18
-_08000E00:
-	ldr r3, _08000E48
-	adds r0, r6, r3
-	ldrb r5, [r0]
-	ldr r4, _08000E4C
-	movs r2, #0xf
-	adds r0, r5, #0
-	ands r0, r2
-	lsls r0, r0, #2
-	adds r0, r0, r4
-	lsrs r1, r5, #4
-	ldr r5, [r0]
-	lsrs r5, r1
-	adds r0, r6, #1
-	adds r0, r0, r3
-	ldrb r1, [r0]
-	adds r0, r1, #0
-	ands r0, r2
-	lsls r0, r0, #2
-	adds r0, r0, r4
-	lsrs r1, r1, #4
-	ldr r0, [r0]
-	lsrs r0, r1
-	mov r1, ip
-	ldr r4, [r1, #4]
-	subs r0, r0, r5
-	adds r1, r7, #0
-	bl sub_80001D0
-	adds r1, r0, #0
-	adds r1, r5, r1
-	adds r0, r4, #0
-	bl sub_80001D0
-	pop {r4, r5, r6, r7}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_08000E48: .4byte ScaleTable
-_08000E4C: .4byte FreqTable
-
 	THUMB_FUNC_START DummyFunc
 DummyFunc: @ 0x08000E50
 	bx lr
@@ -582,7 +531,7 @@ _08001230: .4byte ply_lfos_rev01+1
 _08001234: .4byte ply_mod_rev01+1
 _08001238: .4byte ply_xcmd+1
 _0800123C: .4byte ply_endtie_rev01+1
-_08001240: .4byte SampFreqSet_rev01+1
+_08001240: .4byte SampleFreqSet_rev01+1
 _08001244: .4byte TrackStop_rev01+1
 _08001248: .4byte FadeOutBody_rev01+1
 _0800124C: .4byte TrkVolPitSet_rev01+1
@@ -704,7 +653,7 @@ _080012BA:
 	str r4, [r5, #0x34]
 	movs r0, #0x80
 	lsls r0, r0, #0xb
-	bl SampFreqSet_rev01
+	bl SampleFreqSet_rev01
 	ldr r0, _08001384
 	str r0, [r5]
 	add sp, #4
@@ -730,8 +679,8 @@ _0800137C: .4byte DummyFunc_rev+1
 _08001380: .4byte gMPlayJumpTable
 _08001384: .4byte 0x68736D53
 
-	THUMB_FUNC_START SampFreqSet_rev01
-SampFreqSet_rev01: @ 0x08001388
+	THUMB_FUNC_START SampleFreqSet_rev01
+SampleFreqSet_rev01: @ 0x08001388
 	push {r4, r5, r6, lr}
 	adds r2, r0, #0
 	ldr r0, _08001408
@@ -794,7 +743,7 @@ _080013F4:
 	.align 2, 0
 	.pool
 _08001408: .4byte 0x03007FF0
-_0800140C: .4byte pcmVBtbl_rev
+_0800140C: .4byte gPcmSamplesPerVBlankTable
 _08001410: .4byte 0x00091D1B
 _08001414: .4byte 0x00001388
 _08001418: .4byte 0x00002710
@@ -872,7 +821,7 @@ _0800149A:
 	beq _080014AE
 	bl SoundVSyncOff_rev01
 	adds r0, r4, #0
-	bl SampFreqSet_rev01
+	bl SampleFreqSet_rev01
 _080014AE:
 	ldr r0, _080014BC
 	str r0, [r5]
@@ -1488,7 +1437,7 @@ _08001912:
 	ldrb r0, [r0]
 	b _08001982
 	.align 2, 0
-_0800191C: .4byte NoiseTable
+_0800191C: .4byte gNoiseTable
 _08001920:
 	cmp r5, #0x23
 	bhi _0800192C
@@ -1546,8 +1495,8 @@ _08001982:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08001988: .4byte CgbScTable
-_0800198C: .4byte CgbFrTable
+_08001988: .4byte gCgbScaleTable
+_0800198C: .4byte gCgbFreqTable
 
 	THUMB_FUNC_START CgbOscOff
 CgbOscOff: @ 0x08001990
@@ -2194,7 +2143,7 @@ _08001DEE:
 	b _08001E74
 	.align 2, 0
 _08001E38: .4byte 0x04000081
-_08001E3C: .4byte Cgb3vol
+_08001E3C: .4byte gCgb3Vol
 _08001E40:
 	movs r0, #0xf
 	mov r1, r8
@@ -2787,7 +2736,7 @@ ply_xcmd: @ 0x08002260
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0800227C: .4byte xcmd_tbl
+_0800227C: .4byte gXcmdTable
 
 	THUMB_FUNC_START ply_xxx
 ply_xxx: @ 0x08002280

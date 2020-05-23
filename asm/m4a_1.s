@@ -5,16 +5,16 @@
 
 .text
 
-	THUMB_FUNC_START sub_80001D0
-sub_80001D0: @ sub_80001D0
-	add r2, pc, #0x0
+	thumb_func_start umul3232H32
+umul3232H32:
+	adr r2, __umul3232H32
 	bx r2
-
-	ARM_FUNC_START sub_80001D4
-sub_80001D4: @ 0x080001D4
+	.arm
+__umul3232H32:
 	umull r2, r3, r0, r1
-	add r0, r3, #0
+	add r0, r3, 0
 	bx lr
+	thumb_func_end umul3232H32
 
 	THUMB_FUNC_START SoundMain
 SoundMain: @ 0x080001E0
@@ -189,7 +189,7 @@ _0800069C:
 	pop {r0}
 	bx lr
 	.align 2, 0
-_080006A0: .4byte MPlyJmpTbl
+_080006A0: .4byte gMPlayJumpTableTemplate
 
 	THUMB_FUNC_START ld_r3_tp_adr_i
 ld_r3_tp_adr_i: @ 0x080006A4
@@ -779,7 +779,7 @@ _08000AA2:
 	adds r1, r2, #0
 	ldrb r2, [r5, #9]
 	ldr r0, [r4, #0x24]
-	bl MidiKey2fr
+	bl MidiKeyToFreq
 	str r0, [r4, #0x20]
 _08000AAE:
 	ldr r4, [r4, #0x34]
@@ -811,7 +811,7 @@ _08000AC8:
 .call_r3_rev: @ 0x08000AD8
 	bx r3
 	.align 2, 0
-_08000ADC: .4byte clock_tbl_rev01
+_08000ADC: .4byte gClockTable
 _08000AE0: .4byte 0x03007FF0
 _08000AE4: .4byte 0x68736D53
 
@@ -1141,7 +1141,7 @@ _08000D2A:
 	ldrb r2, [r5, #9]
 	adds r1, r3, #0
 	adds r0, r7, #0
-	bl MidiKey2fr
+	bl MidiKeyToFreq
 _08000D34:
 	str r0, [r4, #0x20]
 	movs r0, #0x80
@@ -1161,7 +1161,7 @@ _08000D42:
 	bx r0
 	.align 2, 0
 _08000D54: .4byte 0x03007FF0
-_08000D58: .4byte clock_tbl_rev01
+_08000D58: .4byte gClockTable
 
 	THUMB_FUNC_START ply_endtie_rev01
 ply_endtie_rev01: @ 0x08000D5C

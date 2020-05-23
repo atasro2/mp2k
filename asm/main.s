@@ -330,7 +330,7 @@ _08002650: .4byte pbymidi_pr
 _08002654: .4byte seg_m4aLib_end+1
 _08002658: .4byte seg_m4aLib_top
 _0800265C: .4byte seg_m4aLib_rodata_end
-_08002660: .4byte MPlyJmpTbl @ seg_m4aLib_rodata_top anyone?
+_08002660: .4byte gMPlayJumpTableTemplate @ seg_m4aLib_rodata_top anyone?
 _08002664: .4byte seg_rodata_end
 _08002668: .4byte seg_rodata_top
 _0800266C: .4byte 0x04000208
