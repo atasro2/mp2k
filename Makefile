@@ -52,6 +52,9 @@ ROM := $(NAME).gba
 ELF := $(NAME).elf
 MAP := $(NAME).map
 
+LIBPATH := -L "$(dir $(shell $(GCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(GCC) -mthumb -print-file-name=libc.a))"
+LIB := $(LIBPATH) -lgcc -lc
+
 # Clear the default suffixes
 .SUFFIXES:
 # Don't delete intermediate files
@@ -93,7 +96,7 @@ $(OBJ_DIR)/sym_iwram.ld: sym_iwram.txt
 	cp $< $@ 
 
 $(ELF): %.elf: $(OBJS) $(OBJ_DIR)/ld_script.ld $(OBJ_DIR)/sym_iwram.ld
-	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$(MAP) -o ../../$@ $(OBJS_REL) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb/nofp -L /usr/lib/arm-none-eabi/lib/thumb/nofp -lgcc -lc
+	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$(MAP) -o ../../$@ $(OBJS_REL) $(LIB)
 	$(GBAFIX) -m01 --silent $@
 
 ifeq ($(NODEP),1)
