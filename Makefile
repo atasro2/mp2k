@@ -1,3 +1,21 @@
+ifeq ($(CC),)
+HOSTCC := gcc
+else
+HOSTCC := $(CC)
+endif
+
+ifeq ($(CXX),)
+HOSTCXX := g++
+else
+HOSTCXX := $(CXX)
+endif
+
+ifeq ($(OS),Windows_NT)
+EXE := .exe
+else
+EXE :=
+endif
+
 AS := arm-none-eabi-as
 LD := arm-none-eabi-ld
 GCC := arm-none-eabi-gcc
@@ -10,6 +28,12 @@ AIF := tools/aif2pcm/aif2pcm
 SCANINC := tools/scaninc/scaninc
 PREPROC := tools/preproc/preproc
 ASFLAGS := -mcpu=arm7tdmi
+
+TOOLDIRS := $(filter-out tools/agbcc tools/binutils,$(wildcard tools/*))
+TOOLBASE = $(TOOLDIRS:tools/%=%)
+TOOLS = $(foreach tool,$(TOOLBASE),tools/$(tool)/$(tool)$(EXE))
+
+MAKEFLAGS += --no-print-directory
 
 OBJ_DIR := build/mp2k
 
@@ -52,6 +76,9 @@ ROM := $(NAME).gba
 ELF := $(NAME).elf
 MAP := $(NAME).map
 
+LIBPATH := -L "$(dir $(shell $(GCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(GCC) -mthumb -print-file-name=libc.a))"
+LIB := $(LIBPATH) -lgcc -lc
+
 # Clear the default suffixes
 .SUFFIXES:
 # Don't delete intermediate files
@@ -61,16 +88,36 @@ MAP := $(NAME).map
 
 .SECONDEXPANSION:
 
-.PHONY: all compare clean
+.PHONY: all compare clean tools clean-tools
+
+infoshell = $(foreach line, $(shell $1 | sed "s/ /__SPACE__/g"), $(info $(subst __SPACE__, ,$(line))))
+
+# Build tools when building the rom
+# Disable dependency scanning for clean/tidy/tools
+ifeq (,$(filter-out all rom compare modern berry_fix libagbsyscall,$(MAKECMDGOALS)))
+$(call infoshell, $(MAKE) tools)
+else
+NODEP := 1
+endif
 
 all: $(ROM)
 
+tools: $(TOOLS)
+
+$(TOOLS): %:
+	@$(MAKE) -C $(@D) CC=$(HOSTCC) CXX=$(HOSTCXX)
+
 compare: $(ROM)
 	$(SHA1SUM) rom.sha1
+	
+clean: mostlyclean clean-tools
 
-clean:
+mostlyclean:
 	rm -f $(ROM) $(ELF) $(MAP) $(OBJS)
 	rm -f sound/direct_sound_samples/*.bin
+	
+clean-tools:
+	@$(foreach tooldir,$(TOOLDIRS),$(MAKE) clean -C $(tooldir);)
 
 include songs.mk
 
@@ -93,7 +140,7 @@ $(OBJ_DIR)/sym_iwram.ld: sym_iwram.txt
 	cp $< $@ 
 
 $(ELF): %.elf: $(OBJS) $(OBJ_DIR)/ld_script.ld $(OBJ_DIR)/sym_iwram.ld
-	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$(MAP) -o ../../$@ $(OBJS_REL) -L /usr/lib/gcc/arm-none-eabi/$(GCC_VER)/thumb/nofp -L /usr/lib/arm-none-eabi/lib/thumb/nofp -lgcc -lc
+	cd $(OBJ_DIR) && $(LD) -T ld_script.ld -Map ../../$(MAP) -o ../../$@ $(OBJS_REL) $(LIB)
 	$(GBAFIX) -m01 --silent $@
 
 ifeq ($(NODEP),1)
