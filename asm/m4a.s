@@ -5,11 +5,6 @@
 
 .text
 
-	THUMB_FUNC_START DummyFunc
-DummyFunc: @ 0x08000E50
-	bx lr
-	.align 2, 0
-
 	THUMB_FUNC_START MPlayContinue
 MPlayContinue: @ 0x08000E54
 	adds r2, r0, #0
@@ -675,7 +670,7 @@ _0800136C: .4byte 0x040000A4
 _08001370: .4byte 0x03007FF0
 _08001374: .4byte 0x050003EC
 _08001378: .4byte ply_note_rev01+1
-_0800137C: .4byte DummyFunc_rev+1
+_0800137C: .4byte DummyFunc+1
 _08001380: .4byte gMPlayJumpTable
 _08001384: .4byte 0x68736D53
 
@@ -2890,10 +2885,5 @@ ply_xswee: @ 0x0800236C
 	ldr r0, [r1, #0x40]
 	adds r0, #1
 	str r0, [r1, #0x40]
-	bx lr
-	.align 2, 0
-
-	THUMB_FUNC_START DummyFunc_rev
-DummyFunc_rev: @ 0x08002380
 	bx lr
 	.align 2, 0
