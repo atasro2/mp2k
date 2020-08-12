@@ -5,42 +5,6 @@
 
 .text
 
-	THUMB_FUNC_START MPlayContinue
-MPlayContinue: @ 0x08000E54
-	adds r2, r0, #0
-	ldr r3, [r2, #0x34]
-	ldr r0, _08000E68
-	cmp r3, r0
-	bne _08000E66
-	ldr r0, [r2, #4]
-	ldr r1, _08000E6C
-	ands r0, r1
-	str r0, [r2, #4]
-_08000E66:
-	bx lr
-	.align 2, 0
-_08000E68: .4byte 0x68736D53
-_08000E6C: .4byte 0x7FFFFFFF
-
-	THUMB_FUNC_START MPlayFadeOut
-MPlayFadeOut: @ 0x08000E70
-	adds r2, r0, #0
-	lsls r1, r1, #0x10
-	lsrs r1, r1, #0x10
-	ldr r3, [r2, #0x34]
-	ldr r0, _08000E8C
-	cmp r3, r0
-	bne _08000E88
-	strh r1, [r2, #0x26]
-	strh r1, [r2, #0x24]
-	movs r0, #0x80
-	lsls r0, r0, #1
-	strh r0, [r2, #0x28]
-_08000E88:
-	bx lr
-	.align 2, 0
-_08000E8C: .4byte 0x68736D53
-
 	THUMB_FUNC_START m4aSoundInit
 m4aSoundInit: @ 0x08000E90
 	push {r4, r5, r6, lr}

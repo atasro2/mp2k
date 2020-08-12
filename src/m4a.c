@@ -34,6 +34,28 @@ u32 MidiKeyToFreq(struct WaveData *wav, u8 key, u8 fineAdjust)
     return umul3232H32(wav->freq, val1 + umul3232H32(val2 - val1, fineAdjustShifted));
 }
 
+void MPlayContinue(struct MusicPlayerInfo *mplayInfo)
+{
+    if (mplayInfo->ident == ID_NUMBER)
+    {
+        ++mplayInfo->ident;
+        mplayInfo->status &= ~MUSICPLAYER_STATUS_PAUSE;
+        mplayInfo->ident = ID_NUMBER;
+    }
+}
+
+void MPlayFadeOut(struct MusicPlayerInfo *mplayInfo, u16 speed)
+{
+    if (mplayInfo->ident == ID_NUMBER)
+    {
+        mplayInfo->ident++;
+        mplayInfo->fadeOC = speed;
+        mplayInfo->fadeOI = speed;
+        mplayInfo->fadeOV = (64 << FADE_VOL_SHIFT);
+        mplayInfo->ident = ID_NUMBER;
+    }
+}
+
 void UnusedDummyFunc(void)
 {
 }
