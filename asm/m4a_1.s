@@ -477,8 +477,8 @@ _08000874:
 _08000878: .4byte 0x040000BC
 _0800087C: .4byte 0x84400004
 
-	THUMB_FUNC_START MPlayMain_rev01
-MPlayMain_rev01: @ 0x08000880
+	THUMB_FUNC_START MPlayMain
+MPlayMain: @ 0x08000880
 	ldr r2, _08000AE4
 	ldr r3, [r0, #0x34]
 	cmp r2, r3
