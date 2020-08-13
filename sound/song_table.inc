@@ -1,7 +1,7 @@
 	.align 2
 
-	.global	song_table
-song_table:
+	.global	gSongTable
+gSongTable:
 	song mus_dummy, 0, 0
 	song se_kaifuku, 1, 1           @ Healing Item
 	song se_pc_login, 1, 1          @ PC Login

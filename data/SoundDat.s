@@ -10,6 +10,6 @@
 	.align 2
 	
 	.global	__total_song_n
-	.equ	__total_song_n, (dummy_song_header - song_table) / 8
+	.equ	__total_song_n, (dummy_song_header - gSongTable) / 8
 
 	.end

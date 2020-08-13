@@ -332,7 +332,7 @@ struct Song
 };
 
 extern const struct MusicPlayer gMPlayTable[];
-extern const struct Song song_table[];
+extern const struct Song gSongTable[];
 
 
 

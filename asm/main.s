@@ -383,7 +383,7 @@ _08002698:
 _080026D0: .4byte CurtCurs
 _080026D4: .4byte p_song
 _080026D8: .4byte gMPlayTable
-_080026DC: .4byte song_table
+_080026DC: .4byte gSongTable
 _080026E0:
 	ldrb r1, [r6]
 	lsls r0, r1, #2
@@ -1604,7 +1604,7 @@ _0800301E:
 	b _08003092
 	.align 2, 0
 _08003060: .4byte CurP
-_08003064: .4byte song_table
+_08003064: .4byte gSongTable
 _08003068: .4byte c_song
 _0800306C: .4byte vcount
 _08003070: .4byte p_song
@@ -1743,7 +1743,7 @@ _08003144:
 	.align 2, 0
 _08003184: .4byte c_song
 _08003188: .4byte app_song_table
-_0800318C: .4byte song_table
+_0800318C: .4byte gSongTable
 _08003190: .4byte p_song
 _08003194: .4byte gMPlayTable
 _08003198: .4byte vcount
