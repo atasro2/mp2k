@@ -16,7 +16,7 @@ m4aSoundInit: @ 0x08000E90
 	ldr r2, _08000EEC
 	bl CpuSet
 	ldr r0, _08000EF0
-	bl SoundInit_rev01
+	bl SoundInit
 	ldr r0, _08000EF4
 	bl MPlayExtender
 	ldr r0, _08000EF8
@@ -355,7 +355,7 @@ _08001110:
 	cmp r0, #0
 	beq _0800113E
 	adds r0, r4, #0
-	bl Clear64byte_rev
+	bl Clear64byte
 	strb r7, [r4]
 	movs r0, #2
 	strb r0, [r4, #0xf]
@@ -500,11 +500,6 @@ _08001258: .4byte MidiKeyToCgbFreq+1
 _0800125C: .4byte 0x00000000
 _08001260: .4byte 0x05000040
 
-	THUMB_FUNC_START MusicPlayerJumpTableCopy
-MusicPlayerJumpTableCopy: @ 0x08001264
-	svc #0x2a
-	bx lr
-
 	THUMB_FUNC_START ClearChain_rev
 ClearChain_rev: @ 0x08001268
 	push {lr}
@@ -515,198 +510,3 @@ ClearChain_rev: @ 0x08001268
 	bx r0
 	.align 2, 0
 _08001278: .4byte gMPlayJumpTable+0x88
-
-	THUMB_FUNC_START Clear64byte_rev
-Clear64byte_rev: @ 0x0800127C
-	push {lr}
-	ldr r1, _0800128C
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0800128C: .4byte gMPlayJumpTable+0x8C
-
-	THUMB_FUNC_START SoundInit_rev01
-SoundInit_rev01: @ 0x08001290
-	push {r4, r5, lr}
-	sub sp, #4
-	adds r5, r0, #0
-	movs r3, #0
-	str r3, [r5]
-	ldr r1, _08001348
-	ldr r0, [r1]
-	movs r2, #0x80
-	lsls r2, r2, #0x12
-	ands r0, r2
-	cmp r0, #0
-	beq _080012AC
-	ldr r0, _0800134C
-	str r0, [r1]
-_080012AC:
-	ldr r1, _08001350
-	ldr r0, [r1]
-	ands r0, r2
-	cmp r0, #0
-	beq _080012BA
-	ldr r0, _0800134C
-	str r0, [r1]
-_080012BA:
-	ldr r0, _08001354
-	movs r2, #0x80
-	lsls r2, r2, #3
-	adds r1, r2, #0
-	strh r1, [r0]
-	adds r0, #0xc
-	strh r1, [r0]
-	ldr r1, _08001358
-	movs r0, #0x8f
-	strh r0, [r1]
-	subs r1, #2
-	ldr r2, _0800135C
-	adds r0, r2, #0
-	strh r0, [r1]
-	ldr r2, _08001360
-	ldrb r1, [r2]
-	movs r0, #0x3f
-	ands r0, r1
-	movs r1, #0x40
-	orrs r0, r1
-	strb r0, [r2]
-	ldr r1, _08001364
-	movs r2, #0xd4
-	lsls r2, r2, #2
-	adds r0, r5, r2
-	str r0, [r1]
-	adds r1, #4
-	ldr r0, _08001368
-	str r0, [r1]
-	adds r1, #8
-	ldr r2, =PCM_DMA_BUF_SIZE+0x350
-	adds r0, r5, r2
-	str r0, [r1]
-	adds r1, #4
-	ldr r0, _0800136C
-	str r0, [r1]
-	ldr r0, _08001370
-	str r5, [r0]
-	str r3, [sp]
-	ldr r2, _08001374
-	mov r0, sp
-	adds r1, r5, #0
-	bl CpuSet
-	movs r0, #8
-	strb r0, [r5, #6]
-	movs r0, #0xf
-	strb r0, [r5, #7]
-	ldr r0, _08001378
-	str r0, [r5, #0x38]
-	ldr r0, _0800137C
-	str r0, [r5, #0x28]
-	str r0, [r5, #0x2c]
-	str r0, [r5, #0x30]
-	str r0, [r5, #0x3c]
-	ldr r4, _08001380
-	adds r0, r4, #0
-	bl MPlyJmpTblCopy
-	str r4, [r5, #0x34]
-	movs r0, #0x80
-	lsls r0, r0, #0xb
-	bl SampleFreqSet
-	ldr r0, _08001384
-	str r0, [r5]
-	add sp, #4
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-	.pool
-_08001348: .4byte 0x040000C4
-_0800134C: .4byte 0x84400004
-_08001350: .4byte 0x040000D0
-_08001354: .4byte 0x040000C6
-_08001358: .4byte 0x04000084
-_0800135C: .4byte 0x0000A90E
-_08001360: .4byte 0x04000089
-_08001364: .4byte 0x040000BC
-_08001368: .4byte 0x040000A0
-_0800136C: .4byte 0x040000A4
-_08001370: .4byte 0x03007FF0
-_08001374: .4byte 0x050003EC
-_08001378: .4byte ply_note_rev01+1
-_0800137C: .4byte DummyFunc+1
-_08001380: .4byte gMPlayJumpTable
-_08001384: .4byte 0x68736D53
-
-	THUMB_FUNC_START SampleFreqSet
-SampleFreqSet: @ 0x08001388
-	push {r4, r5, r6, lr}
-	adds r2, r0, #0
-	ldr r0, _08001408
-	ldr r4, [r0]
-	movs r0, #0xf0
-	lsls r0, r0, #0xc
-	ands r0, r2
-	lsrs r2, r0, #0x10
-	movs r6, #0
-	strb r2, [r4, #8]
-	ldr r1, _0800140C
-	subs r0, r2, #1
-	lsls r0, r0, #1
-	adds r0, r0, r1
-	ldrh r5, [r0]
-	str r5, [r4, #0x10]
-	ldr r0, =PCM_DMA_BUF_SIZE
-	adds r1, r5, #0
-	bl __divsi3
-	strb r0, [r4, #0xb]
-	ldr r0, _08001410
-	muls r0, r5, r0
-	ldr r1, _08001414
-	adds r0, r0, r1
-	ldr r1, _08001418
-	bl __divsi3
-	adds r1, r0, #0
-	str r1, [r4, #0x14]
-	movs r0, #0x80
-	lsls r0, r0, #0x11
-	bl __divsi3
-	adds r0, #1
-	asrs r0, r0, #1
-	str r0, [r4, #0x18]
-	ldr r0, _0800141C
-	strh r6, [r0]
-	ldr r4, _08001420
-	ldr r0, _08001424
-	adds r1, r5, #0
-	bl __divsi3
-	rsbs r0, r0, #0
-	strh r0, [r4]
-	bl m4aSoundVSyncOn
-	ldr r1, _08001428
-_080013EC:
-	ldrb r0, [r1]
-	cmp r0, #0x9f
-	beq _080013EC
-	ldr r1, _08001428
-_080013F4:
-	ldrb r0, [r1]
-	cmp r0, #0x9f
-	bne _080013F4
-	ldr r1, _0800141C
-	movs r0, #0x80
-	strh r0, [r1]
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-	.pool
-_08001408: .4byte 0x03007FF0
-_0800140C: .4byte gPcmSamplesPerVBlankTable
-_08001410: .4byte 0x00091D1B
-_08001414: .4byte 0x00001388
-_08001418: .4byte 0x00002710
-_0800141C: .4byte 0x04000102
-_08001420: .4byte 0x04000100
-_08001424: .4byte 0x00044940
-_08001428: .4byte 0x04000006

@@ -62,6 +62,11 @@ void UnusedDummyFunc(void)
 {
 }
 
+void MusicPlayerJumpTableCopy(void)
+{
+    asm("swi 0x2A");
+}
+
 void Clear64byte(void *x)
 {
     void (*func)(void *) = *(&gMPlayJumpTable[35]);
@@ -124,6 +129,85 @@ void m4aSoundMode(u32 mode)
     }
 
     soundInfo->ident = ID_NUMBER;
+}
+
+void SoundInit(struct SoundInfo *soundInfo)
+{
+    soundInfo->ident = 0;
+
+    if (REG_DMA1CNT & (DMA_REPEAT << 16))
+        REG_DMA1CNT = ((DMA_ENABLE | DMA_START_NOW | DMA_32BIT | DMA_SRC_INC | DMA_DEST_FIXED) << 16) | 4;
+
+    if (REG_DMA2CNT & (DMA_REPEAT << 16))
+        REG_DMA2CNT = ((DMA_ENABLE | DMA_START_NOW | DMA_32BIT | DMA_SRC_INC | DMA_DEST_FIXED) << 16) | 4;
+
+    REG_DMA1CNT_H = DMA_32BIT;
+    REG_DMA2CNT_H = DMA_32BIT;
+    REG_SOUNDCNT_X = SOUND_MASTER_ENABLE
+                   | SOUND_4_ON
+                   | SOUND_3_ON
+                   | SOUND_2_ON
+                   | SOUND_1_ON;
+    REG_SOUNDCNT_H = SOUND_B_FIFO_RESET | SOUND_B_TIMER_0 | SOUND_B_LEFT_OUTPUT
+                   | SOUND_A_FIFO_RESET | SOUND_A_TIMER_0 | SOUND_A_RIGHT_OUTPUT
+                   | SOUND_ALL_MIX_FULL;
+    REG_SOUNDBIAS_H = (REG_SOUNDBIAS_H & 0x3F) | 0x40;
+
+    REG_DMA1SAD = (s32)soundInfo->pcmBuffer;
+    REG_DMA1DAD = (s32)&REG_FIFO_A;
+    REG_DMA2SAD = (s32)soundInfo->pcmBuffer + PCM_DMA_BUF_SIZE;
+    REG_DMA2DAD = (s32)&REG_FIFO_B;
+
+    SOUND_INFO_PTR = soundInfo;
+    CpuFill32(0, soundInfo, sizeof(struct SoundInfo));
+
+    soundInfo->maxChans = 8;
+    soundInfo->masterVolume = 15;
+    soundInfo->plynote = (u32)ply_note;
+    soundInfo->CgbSound = DummyFunc;
+    soundInfo->CgbOscOff = (void (*)(u8))DummyFunc;
+    soundInfo->MidiKeyToCgbFreq = (u32 (*)(u8, u8, u8))DummyFunc;
+    soundInfo->ExtVolPit = (u32)DummyFunc;
+
+    MPlayJumpTableCopy(gMPlayJumpTable);
+
+    soundInfo->MPlayJumpTable = (u32)gMPlayJumpTable;
+
+    SampleFreqSet(SOUND_MODE_FREQ_13379);
+
+    soundInfo->ident = ID_NUMBER;
+}
+
+void SampleFreqSet(u32 freq)
+{
+    struct SoundInfo *soundInfo = SOUND_INFO_PTR;
+
+    freq = (freq & 0xF0000) >> 16;
+    soundInfo->freq = freq;
+    soundInfo->pcmSamplesPerVBlank = gPcmSamplesPerVBlankTable[freq - 1];
+    soundInfo->pcmDmaPeriod = PCM_DMA_BUF_SIZE / soundInfo->pcmSamplesPerVBlank;
+
+    // LCD refresh rate 59.7275Hz
+    soundInfo->pcmFreq = (597275 * soundInfo->pcmSamplesPerVBlank + 5000) / 10000;
+
+    // CPU frequency 16.78Mhz
+    soundInfo->divFreq = (16777216 / soundInfo->pcmFreq + 1) >> 1;
+
+    // Turn off timer 0.
+    REG_TM0CNT_H = 0;
+
+    // cycles per LCD fresh 280896
+    REG_TM0CNT_L = -(280896 / soundInfo->pcmSamplesPerVBlank);
+
+    m4aSoundVSyncOn();
+
+    while (*(vu8 *)REG_ADDR_VCOUNT == 159)
+        ;
+
+    while (*(vu8 *)REG_ADDR_VCOUNT != 159)
+        ;
+
+    REG_TM0CNT_H = TIMER_ENABLE | TIMER_1CLK;
 }
 
 void SoundClear(void)

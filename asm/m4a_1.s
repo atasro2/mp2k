@@ -154,8 +154,8 @@ _08000664:
 	bx r0
 	.align 2, 0
 
-	THUMB_FUNC_START MPlyJmpTblCopy
-MPlyJmpTblCopy: @ 0x08000670
+	THUMB_FUNC_START MPlayJumpTableCopy
+MPlayJumpTableCopy: @ 0x08000670
 	mov ip, lr
 	movs r1, #0x24
 	ldr r2, _080006A0
@@ -567,7 +567,7 @@ _08000916:
 	tst r0, r3
 	beq _08000994
 	adds r0, r5, #0
-	bl Clear64byte_rev
+	bl Clear64byte
 	movs r0, #0x80
 	strb r0, [r5]
 	movs r0, #2
@@ -884,8 +884,8 @@ _08000B58:
 	strb r0, [r4, #3]
 	bx lr
 
-	THUMB_FUNC_START ply_note_rev01
-ply_note_rev01: @ 0x08000B5C
+	THUMB_FUNC_START ply_note
+ply_note: @ 0x08000B5C
 	push {r4, r5, r6, r7, lr}
 	mov r4, r8
 	mov r5, sb
