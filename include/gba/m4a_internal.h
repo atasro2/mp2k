@@ -379,15 +379,15 @@ extern char gMaxLines[];
 u32 umul3232H32(u32 multiplier, u32 multiplicand);
 void SoundMain(void);
 void SoundMainBTM(void);
-void TrackStop_rev01(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
+void TrackStop(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
 void MPlayMain(void);
 void ClearChain(void *x);
 
 void MPlayContinue(struct MusicPlayerInfo *mplayInfo);
 void MPlayStart(struct MusicPlayerInfo *mplayInfo, struct SongHeader *songHeader);
 void m4aMPlayStop(struct MusicPlayerInfo *mplayInfo);
-void FadeOutBody_rev01(struct MusicPlayerInfo *mplayInfo);
-void TrkVolPitSet_rev01(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
+void FadeOutBody(struct MusicPlayerInfo *mplayInfo);
+void TrkVolPitSet(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track);
 void MPlayFadeOut(struct MusicPlayerInfo *mplayInfo, u16 speed);
 void ClearChain(void *x);
 void Clear64byte(void *addr);

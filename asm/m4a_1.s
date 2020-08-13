@@ -511,7 +511,7 @@ _080008B4:
 	ldr r0, [r0]
 	mov r8, r0
 	adds r0, r7, #0
-	bl FadeOutBody_rev01
+	bl FadeOutBody
 	ldr r0, [r7, #4]
 	cmp r0, #0
 	bge _080008C8
@@ -722,7 +722,7 @@ _08000A24:
 	mov sb, r2
 	adds r0, r7, #0
 	adds r1, r5, #0
-	bl TrkVolPitSet_rev01
+	bl TrkVolPitSet
 	ldr r4, [r5, #0x20]
 	cmp r4, #0
 	beq _08000AB4
@@ -815,8 +815,8 @@ _08000ADC: .4byte gClockTable
 _08000AE0: .4byte 0x03007FF0
 _08000AE4: .4byte 0x68736D53
 
-	THUMB_FUNC_START TrackStop_rev01
-TrackStop_rev01: @ 0x08000AE8
+	THUMB_FUNC_START TrackStop
+TrackStop: @ 0x08000AE8
 	push {r4, r5, r6, lr}
 	adds r5, r1, #0
 	ldrb r1, [r5]
@@ -1087,7 +1087,7 @@ _08000CB0:
 _08000CC2:
 	ldr r0, [sp]
 	adds r1, r5, #0
-	bl TrkVolPitSet_rev01
+	bl TrkVolPitSet
 	ldr r0, [r5, #4]
 	str r0, [r4, #0x10]
 	ldr r0, [sp, #0x10]

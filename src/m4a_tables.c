@@ -38,9 +38,9 @@ void * const gMPlayJumpTableTemplate[] =
     ply_fine,
     ply_endtie_rev01,
     SampleFreqSet_rev01,
-    TrackStop_rev01,
-    FadeOutBody_rev01,
-    TrkVolPitSet_rev01,
+    TrackStop,
+    FadeOutBody,
+    TrkVolPitSet,
     ClearChain,
     SoundMainBTM,
 };

@@ -62,6 +62,272 @@ void UnusedDummyFunc(void)
 {
 }
 
+void m4aMPlayStop(struct MusicPlayerInfo *mplayInfo)
+{
+    s32 i;
+    struct MusicPlayerTrack *track;
+
+    if (mplayInfo->ident != ID_NUMBER)
+        return;
+
+    mplayInfo->ident++;
+    mplayInfo->status |= MUSICPLAYER_STATUS_PAUSE;
+
+    i = mplayInfo->trackCount;
+    track = mplayInfo->tracks;
+
+    while (i > 0)
+    {
+        TrackStop(mplayInfo, track);
+        i--;
+        track++;
+    }
+
+    mplayInfo->ident = ID_NUMBER;
+}
+
+void FadeOutBody(struct MusicPlayerInfo *mplayInfo)
+{
+    s32 i;
+    struct MusicPlayerTrack *track;
+    u16 fadeOV;
+#ifdef NONMATCHING
+    u16 mask;
+#else
+    register u16 mask asm("r2");
+#endif // NONMATCHING
+
+    if (mplayInfo->fadeOI == 0)
+        return;
+
+    mplayInfo->fadeOC--;
+    mask = 0xFFFF;
+
+    if (mplayInfo->fadeOC != 0)
+        return;
+
+    mplayInfo->fadeOC = mplayInfo->fadeOI;
+
+    if (mplayInfo->fadeOV & FADE_IN)
+    {
+        mplayInfo->fadeOV += (4 << FADE_VOL_SHIFT);
+
+        if ((u16)(mplayInfo->fadeOV & mask) >= (64 << FADE_VOL_SHIFT))
+        {
+            mplayInfo->fadeOV = (64 << FADE_VOL_SHIFT);
+            mplayInfo->fadeOI = 0;
+        }
+    }
+    else
+    {
+        mplayInfo->fadeOV -= (4 << FADE_VOL_SHIFT);
+
+        if ((s16)(mplayInfo->fadeOV & mask) <= 0)
+        {
+            i = mplayInfo->trackCount;
+            track = mplayInfo->tracks;
+
+            while (i > 0)
+            {
+                u32 val;
+
+                TrackStop(mplayInfo, track);
+
+                val = TEMPORARY_FADE;
+                fadeOV = mplayInfo->fadeOV;
+                val &= fadeOV;
+
+                if (!val)
+                    track->flags = 0;
+
+                i--;
+                track++;
+            }
+
+            if (mplayInfo->fadeOV & TEMPORARY_FADE)
+                mplayInfo->status |= MUSICPLAYER_STATUS_PAUSE;
+            else
+                mplayInfo->status = MUSICPLAYER_STATUS_PAUSE;
+
+            mplayInfo->fadeOI = 0;
+            return;
+        }
+    }
+
+    i = mplayInfo->trackCount;
+    track = mplayInfo->tracks;
+
+    while (i > 0)
+    {
+        if (track->flags & MPT_FLG_EXIST)
+        {
+            fadeOV = mplayInfo->fadeOV;
+
+            track->volX = (fadeOV >> FADE_VOL_SHIFT);
+            track->flags |= MPT_FLG_VOLCHG;
+        }
+
+        i--;
+        track++;
+    }
+}
+
+void TrkVolPitSet(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    if (track->flags & MPT_FLG_VOLSET)
+    {
+        s32 x;
+        s32 y;
+
+        x = (u32)(track->vol * track->volX) >> 5;
+
+        if (track->modT == 1)
+            x = (u32)(x * (track->modM + 128)) >> 7;
+
+        y = 2 * track->pan + track->panX;
+
+        if (track->modT == 2)
+            y += track->modM;
+
+        if (y < -128)
+            y = -128;
+        else if (y > 127)
+            y = 127;
+
+        track->volMR = (u32)((y + 128) * x) >> 8;
+        track->volML = (u32)((127 - y) * x) >> 8;
+    }
+
+    if (track->flags & MPT_FLG_PITSET)
+    {
+        s32 bend = track->bend * track->bendRange;
+        s32 x = (track->tune + bend)
+              * 4
+              + (track->keyShift << 8)
+              + (track->keyShiftX << 8)
+              + track->pitX;
+
+        if (track->modT == 0)
+            x += 16 * track->modM;
+
+        track->keyM = x >> 8;
+        track->pitM = x;
+    }
+
+    track->flags &= ~(MPT_FLG_PITSET | MPT_FLG_VOLSET);
+}
+
+u32 MidiKeyToCgbFreq(u8 chanNum, u8 key, u8 fineAdjust)
+{
+    if (chanNum == 4)
+    {
+        if (key <= 20)
+        {
+            key = 0;
+        }
+        else
+        {
+            key -= 21;
+            if (key > 59)
+                key = 59;
+        }
+
+        return gNoiseTable[key];
+    }
+    else
+    {
+        s32 val1;
+        s32 val2;
+
+        if (key <= 35)
+        {
+            fineAdjust = 0;
+            key = 0;
+        }
+        else
+        {
+            key -= 36;
+            if (key > 130)
+            {
+                key = 130;
+                fineAdjust = 255;
+            }
+        }
+
+        val1 = gCgbScaleTable[key];
+        val1 = gCgbFreqTable[val1 & 0xF] >> (val1 >> 4);
+
+        val2 = gCgbScaleTable[key + 1];
+        val2 = gCgbFreqTable[val2 & 0xF] >> (val2 >> 4);
+
+        return val1 + ((fineAdjust * (val2 - val1)) >> 8) + 2048;
+    }
+}
+
+void CgbOscOff(u8 chanNum)
+{
+    switch (chanNum)
+    {
+    case 1:
+        REG_NR12 = 8;
+        REG_NR14 = 0x80;
+        break;
+    case 2:
+        REG_NR22 = 8;
+        REG_NR24 = 0x80;
+        break;
+    case 3:
+        REG_NR30 = 0;
+        break;
+    default:
+        REG_NR42 = 8;
+        REG_NR44 = 0x80;
+    }
+}
+
+static inline int CgbPan(struct CgbChannel *chan)
+{
+    u32 rightVolume = chan->rightVolume;
+    u32 leftVolume = chan->leftVolume;
+
+    if ((rightVolume = (u8)rightVolume) >= (leftVolume = (u8)leftVolume))
+    {
+        if (rightVolume / 2 >= leftVolume)
+        {
+            chan->pan = 0x0F;
+            return 1;
+        }
+    }
+    else
+    {
+        if (leftVolume / 2 >= rightVolume)
+        {
+            chan->pan = 0xF0;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void CgbModVol(struct CgbChannel *chan)
+{
+    if (!CgbPan(chan))
+    {
+        chan->pan = 0xFF;
+        chan->eg = (u32)(chan->rightVolume + chan->leftVolume) >> 4;
+    }
+    else
+    {
+        chan->eg = (u32)(chan->rightVolume + chan->leftVolume) >> 4;
+        if (chan->eg > 15)
+            chan->eg = 15;
+    }
+
+    chan->sg = (chan->eg * chan->su + 15) >> 4;
+    chan->pan &= chan->panMask;
+}
+
 void CgbSound(void)
 {
     s32 ch;
