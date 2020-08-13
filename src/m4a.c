@@ -60,6 +60,95 @@ void UnusedDummyFunc(void)
 {
 }
 
+void ply_xcmd(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    u32 n = *track->cmdPtr;
+    track->cmdPtr++;
+
+    gXcmdTable[n](mplayInfo, track);
+}
+
+void ply_xxx(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    void (*func)(struct MusicPlayerInfo *, struct MusicPlayerTrack *) = *(&gMPlayJumpTable[0]);
+    func(mplayInfo, track);
+}
+
+#define READ_XCMD_BYTE(var, n)       \
+{                                    \
+    u32 byte = track->cmdPtr[(n)]; \
+    byte <<= n * 8;                  \
+    (var) &= ~(0xFF << (n * 8));     \
+    (var) |= byte;                   \
+}
+
+void ply_xwave(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    u32 wav;
+
+    READ_XCMD_BYTE(wav, 0) // UB: uninitialized variable
+    READ_XCMD_BYTE(wav, 1)
+    READ_XCMD_BYTE(wav, 2)
+    READ_XCMD_BYTE(wav, 3)
+
+    track->tone.wav = (struct WaveData *)wav;
+    track->cmdPtr += 4;
+}
+
+void ply_xtype(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->tone.type = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xatta(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->tone.attack = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xdeca(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->tone.decay = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xsust(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->tone.sustain = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xrele(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->tone.release = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xiecv(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->echoVolume = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xiecl(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->echoLength = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xleng(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->tone.length = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
+void ply_xswee(struct MusicPlayerInfo *mplayInfo, struct MusicPlayerTrack *track)
+{
+    track->tone.pan_sweep = *track->cmdPtr;
+    track->cmdPtr++;
+}
+
 void DummyFunc(void)
 {
 }
