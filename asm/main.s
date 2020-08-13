@@ -1072,7 +1072,7 @@ _08002C28:
 	lsrs r2, r2, #0x10
 	adds r0, r4, #0
 	adds r1, r5, #0
-	bl MPlayVolumeControl
+	bl m4aMPlayVolumeControl
 	b _08002C84
 	.align 2, 0
 _08002C4C: .4byte pbymidi_swi
@@ -1323,7 +1323,7 @@ _08002E32:
 	lsrs r2, r2, #0x10
 	adds r0, r4, #0
 	adds r1, r5, #0
-	bl MPlayVolumeControl
+	bl m4aMPlayVolumeControl
 	b _08002EAE
 	.align 2, 0
 _08002E5C: .4byte pbymidi_swi

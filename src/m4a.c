@@ -60,6 +60,203 @@ void UnusedDummyFunc(void)
 {
 }
 
+void m4aMPlayTempoControl(struct MusicPlayerInfo *mplayInfo, u16 tempo)
+{
+    if (mplayInfo->ident == ID_NUMBER)
+    {
+        mplayInfo->ident++;
+        mplayInfo->tempoU = tempo;
+        mplayInfo->tempoI = (mplayInfo->tempoD * mplayInfo->tempoU) >> 8;
+        mplayInfo->ident = ID_NUMBER;
+    }
+}
+
+void m4aMPlayVolumeControl(struct MusicPlayerInfo *mplayInfo, u16 trackBits, u16 volume)
+{
+    s32 i;
+    u32 bit;
+    struct MusicPlayerTrack *track;
+
+    if (mplayInfo->ident != ID_NUMBER)
+        return;
+
+    mplayInfo->ident++;
+
+    i = mplayInfo->trackCount;
+    track = mplayInfo->tracks;
+    bit = 1;
+
+    while (i > 0)
+    {
+        if (trackBits & bit)
+        {
+            if (track->flags & MPT_FLG_EXIST)
+            {
+                track->volX = volume / 4;
+                track->flags |= MPT_FLG_VOLCHG;
+            }
+        }
+
+        i--;
+        track++;
+        bit <<= 1;
+    }
+
+    mplayInfo->ident = ID_NUMBER;
+}
+
+void m4aMPlayPitchControl(struct MusicPlayerInfo *mplayInfo, u16 trackBits, s16 pitch)
+{
+    s32 i;
+    u32 bit;
+    struct MusicPlayerTrack *track;
+
+    if (mplayInfo->ident != ID_NUMBER)
+        return;
+
+    mplayInfo->ident++;
+
+    i = mplayInfo->trackCount;
+    track = mplayInfo->tracks;
+    bit = 1;
+
+    while (i > 0)
+    {
+        if (trackBits & bit)
+        {
+            if (track->flags & MPT_FLG_EXIST)
+            {
+                track->keyShiftX = pitch >> 8;
+                track->pitX = pitch;
+                track->flags |= MPT_FLG_PITCHG;
+            }
+        }
+
+        i--;
+        track++;
+        bit <<= 1;
+    }
+
+    mplayInfo->ident = ID_NUMBER;
+}
+
+void m4aMPlayPanpotControl(struct MusicPlayerInfo *mplayInfo, u16 trackBits, s8 pan)
+{
+    s32 i;
+    u32 bit;
+    struct MusicPlayerTrack *track;
+
+    if (mplayInfo->ident != ID_NUMBER)
+        return;
+
+    mplayInfo->ident++;
+
+    i = mplayInfo->trackCount;
+    track = mplayInfo->tracks;
+    bit = 1;
+
+    while (i > 0)
+    {
+        if (trackBits & bit)
+        {
+            if (track->flags & MPT_FLG_EXIST)
+            {
+                track->panX = pan;
+                track->flags |= MPT_FLG_VOLCHG;
+            }
+        }
+
+        i--;
+        track++;
+        bit <<= 1;
+    }
+
+    mplayInfo->ident = ID_NUMBER;
+}
+
+void ClearModM(struct MusicPlayerTrack *track)
+{
+    track->lfoSpeedC = 0;
+    track->modM = 0;
+
+    if (track->modT == 0)
+        track->flags |= MPT_FLG_PITCHG;
+    else
+        track->flags |= MPT_FLG_VOLCHG;
+}
+
+void m4aMPlayModDepthSet(struct MusicPlayerInfo *mplayInfo, u16 trackBits, u8 modDepth)
+{
+    s32 i;
+    u32 bit;
+    struct MusicPlayerTrack *track;
+
+    if (mplayInfo->ident != ID_NUMBER)
+        return;
+
+    mplayInfo->ident++;
+
+    i = mplayInfo->trackCount;
+    track = mplayInfo->tracks;
+    bit = 1;
+
+    while (i > 0)
+    {
+        if (trackBits & bit)
+        {
+            if (track->flags & MPT_FLG_EXIST)
+            {
+                track->mod = modDepth;
+
+                if (!track->mod)
+                    ClearModM(track);
+            }
+        }
+
+        i--;
+        track++;
+        bit <<= 1;
+    }
+
+    mplayInfo->ident = ID_NUMBER;
+}
+
+void m4aMPlayLFOSpeedSet(struct MusicPlayerInfo *mplayInfo, u16 trackBits, u8 lfoSpeed)
+{
+    s32 i;
+    u32 bit;
+    struct MusicPlayerTrack *track;
+
+    if (mplayInfo->ident != ID_NUMBER)
+        return;
+
+    mplayInfo->ident++;
+
+    i = mplayInfo->trackCount;
+    track = mplayInfo->tracks;
+    bit = 1;
+
+    while (i > 0)
+    {
+        if (trackBits & bit)
+        {
+            if (track->flags & MPT_FLG_EXIST)
+            {
+                track->lfoSpeed = lfoSpeed;
+
+                if (!track->lfoSpeed)
+                    ClearModM(track);
+            }
+        }
+
+        i--;
+        track++;
+        bit <<= 1;
+    }
+
+    mplayInfo->ident = ID_NUMBER;
+}
+
 #define MEMACC_COND_JUMP(cond) \
 if (cond)                      \
     goto cond_true;            \
