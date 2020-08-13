@@ -793,7 +793,7 @@ _08002A24: .4byte KeyRep
 	THUMB_FUNC_START VBlankIntr
 VBlankIntr: @ 0x08002A28
 	push {lr}
-	bl SoundVSync_rev01
+	bl SoundVSync
 	ldr r1, _08002A38
 	movs r0, #1
 	strh r0, [r1]

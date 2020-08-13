@@ -332,7 +332,7 @@ struct Song
 };
 
 extern const struct MusicPlayer gMPlayTable[];
-extern const struct Song gSongTable[];
+extern const struct Song song_table[];
 
 
 
@@ -440,14 +440,14 @@ void ply_vol(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_pan(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_bend(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_bendr(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
-void ply_lfos_rev01(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_lfos(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_lfodl(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
-void ply_mod_rev01(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_mod(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_modt(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_tune(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_port(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_xcmd(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
-void ply_endtie_rev01(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_endtie(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_note(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 
 // extended sound command handler functions

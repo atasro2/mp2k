@@ -1,3 +1,6 @@
+gNumMusicPlayers = 4;
+gMaxLines = 0;
+
 SECTIONS {
     . = 0x2000000;
     ewram (NOLOAD) :

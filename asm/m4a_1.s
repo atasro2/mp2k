@@ -435,8 +435,8 @@ ply_port: @ 0x0800081C
 	.align 2, 0
 _08000830: .4byte 0x04000060
 
-	THUMB_FUNC_START SoundVSync_rev01
-SoundVSync_rev01: @ 0x08000834
+	THUMB_FUNC_START SoundVSync
+SoundVSync: @ 0x08000834
 	ldr r0, _08000AE0
 	ldr r0, [r0]
 	ldr r2, _08000AE4
@@ -1163,8 +1163,8 @@ _08000D42:
 _08000D54: .4byte 0x03007FF0
 _08000D58: .4byte gClockTable
 
-	THUMB_FUNC_START ply_endtie_rev01
-ply_endtie_rev01: @ 0x08000D5C
+	THUMB_FUNC_START ply_endtie
+ply_endtie: @ 0x08000D5C
 	push {r4, r5}
 	ldr r2, [r1, #0x40]
 	ldrb r3, [r2]
@@ -1234,8 +1234,8 @@ ld_r3_r2_i_sub_rev: @ 0x08000DBA
 	bx lr
 	.align 2, 0
 
-	THUMB_FUNC_START ply_lfos_rev01
-ply_lfos_rev01: @ 0x08000DC4
+	THUMB_FUNC_START ply_lfos
+ply_lfos: @ 0x08000DC4
 	mov ip, lr
 	bl ld_r3_tp_adr_i_rev
 	strb r3, [r1, #0x19]
@@ -1246,8 +1246,8 @@ _08000DD4:
 	bx ip
 	.align 2, 0
 
-	THUMB_FUNC_START ply_mod_rev01
-ply_mod_rev01: @ 0x08000DD8
+	THUMB_FUNC_START ply_mod
+ply_mod: @ 0x08000DD8
 	mov ip, lr
 	bl ld_r3_tp_adr_i_rev
 	strb r3, [r1, #0x17]
