@@ -41,7 +41,7 @@ void * const gMPlayJumpTableTemplate[] =
     TrackStop,
     FadeOutBody,
     TrkVolPitSet,
-    ClearChain,
+    RealClearChain,
     SoundMainBTM,
 };
 

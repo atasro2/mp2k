@@ -24,7 +24,6 @@ SECTIONS {
         asm/crt0.o(.text);
         seg_m4aLib_top = .;
         src/m4a.o(.text);
-        asm/m4a.o(.text);
         asm/m4a_1.o(.text);
         asm/m4a_mixer.o(.text);
         asm/main.o(.text);

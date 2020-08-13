@@ -102,8 +102,8 @@ SoundMainBTM: @ 0x08000608
 	bx lr
 	.align 2, 0
 
-	THUMB_FUNC_START ClearChain
-ClearChain: @ 0x08000620
+	THUMB_FUNC_START RealClearChain
+RealClearChain: @ 0x08000620
 	ldr r3, [r0, #0x2c]
 	cmp r3, #0
 	beq _0800063E
@@ -142,7 +142,7 @@ _0800064A:
 	strb r1, [r4]
 _08000658:
 	adds r0, r4, #0
-	bl ClearChain
+	bl RealClearChain
 	ldr r4, [r4, #0x34]
 	cmp r4, #0
 	bne _0800064A
@@ -556,7 +556,7 @@ _080008EE:
 	b _08000910
 _0800090A:
 	adds r0, r4, #0
-	bl ClearChain_rev
+	bl ClearChain
 _08000910:
 	ldr r4, [r4, #0x34]
 	cmp r4, #0
@@ -732,7 +732,7 @@ _08000A42:
 	tst r0, r1
 	bne _08000A52
 	adds r0, r4, #0
-	bl ClearChain_rev
+	bl ClearChain
 	b _08000AAE
 _08000A52:
 	ldrb r0, [r4, #1]
@@ -1067,7 +1067,7 @@ _08000C90:
 	beq _08000D42
 _08000C9C:
 	adds r0, r4, #0
-	bl ClearChain_rev
+	bl ClearChain
 	movs r1, #0
 	str r1, [r4, #0x30]
 	ldr r3, [r5, #0x20]
