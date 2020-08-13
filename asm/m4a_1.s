@@ -102,8 +102,8 @@ SoundMainBTM: @ 0x08000608
 	bx lr
 	.align 2, 0
 
-	THUMB_FUNC_START ClearChain
-ClearChain: @ 0x08000620
+	THUMB_FUNC_START RealClearChain
+RealClearChain: @ 0x08000620
 	ldr r3, [r0, #0x2c]
 	cmp r3, #0
 	beq _0800063E
@@ -142,7 +142,7 @@ _0800064A:
 	strb r1, [r4]
 _08000658:
 	adds r0, r4, #0
-	bl ClearChain
+	bl RealClearChain
 	ldr r4, [r4, #0x34]
 	cmp r4, #0
 	bne _0800064A
@@ -154,8 +154,8 @@ _08000664:
 	bx r0
 	.align 2, 0
 
-	THUMB_FUNC_START MPlyJmpTblCopy
-MPlyJmpTblCopy: @ 0x08000670
+	THUMB_FUNC_START MPlayJumpTableCopy
+MPlayJumpTableCopy: @ 0x08000670
 	mov ip, lr
 	movs r1, #0x24
 	ldr r2, _080006A0
@@ -435,8 +435,8 @@ ply_port: @ 0x0800081C
 	.align 2, 0
 _08000830: .4byte 0x04000060
 
-	THUMB_FUNC_START SoundVSync_rev01
-SoundVSync_rev01: @ 0x08000834
+	THUMB_FUNC_START SoundVSync
+SoundVSync: @ 0x08000834
 	ldr r0, _08000AE0
 	ldr r0, [r0]
 	ldr r2, _08000AE4
@@ -477,8 +477,8 @@ _08000874:
 _08000878: .4byte 0x040000BC
 _0800087C: .4byte 0x84400004
 
-	THUMB_FUNC_START MPlayMain_rev01
-MPlayMain_rev01: @ 0x08000880
+	THUMB_FUNC_START MPlayMain
+MPlayMain: @ 0x08000880
 	ldr r2, _08000AE4
 	ldr r3, [r0, #0x34]
 	cmp r2, r3
@@ -511,7 +511,7 @@ _080008B4:
 	ldr r0, [r0]
 	mov r8, r0
 	adds r0, r7, #0
-	bl FadeOutBody_rev01
+	bl FadeOutBody
 	ldr r0, [r7, #4]
 	cmp r0, #0
 	bge _080008C8
@@ -556,7 +556,7 @@ _080008EE:
 	b _08000910
 _0800090A:
 	adds r0, r4, #0
-	bl ClearChain_rev
+	bl ClearChain
 _08000910:
 	ldr r4, [r4, #0x34]
 	cmp r4, #0
@@ -567,7 +567,7 @@ _08000916:
 	tst r0, r3
 	beq _08000994
 	adds r0, r5, #0
-	bl Clear64byte_rev
+	bl Clear64byte
 	movs r0, #0x80
 	strb r0, [r5]
 	movs r0, #2
@@ -722,7 +722,7 @@ _08000A24:
 	mov sb, r2
 	adds r0, r7, #0
 	adds r1, r5, #0
-	bl TrkVolPitSet_rev01
+	bl TrkVolPitSet
 	ldr r4, [r5, #0x20]
 	cmp r4, #0
 	beq _08000AB4
@@ -732,7 +732,7 @@ _08000A42:
 	tst r0, r1
 	bne _08000A52
 	adds r0, r4, #0
-	bl ClearChain_rev
+	bl ClearChain
 	b _08000AAE
 _08000A52:
 	ldrb r0, [r4, #1]
@@ -815,8 +815,8 @@ _08000ADC: .4byte gClockTable
 _08000AE0: .4byte 0x03007FF0
 _08000AE4: .4byte 0x68736D53
 
-	THUMB_FUNC_START TrackStop_rev01
-TrackStop_rev01: @ 0x08000AE8
+	THUMB_FUNC_START TrackStop
+TrackStop: @ 0x08000AE8
 	push {r4, r5, r6, lr}
 	adds r5, r1, #0
 	ldrb r1, [r5]
@@ -884,8 +884,8 @@ _08000B58:
 	strb r0, [r4, #3]
 	bx lr
 
-	THUMB_FUNC_START ply_note_rev01
-ply_note_rev01: @ 0x08000B5C
+	THUMB_FUNC_START ply_note
+ply_note: @ 0x08000B5C
 	push {r4, r5, r6, r7, lr}
 	mov r4, r8
 	mov r5, sb
@@ -1067,7 +1067,7 @@ _08000C90:
 	beq _08000D42
 _08000C9C:
 	adds r0, r4, #0
-	bl ClearChain_rev
+	bl ClearChain
 	movs r1, #0
 	str r1, [r4, #0x30]
 	ldr r3, [r5, #0x20]
@@ -1087,7 +1087,7 @@ _08000CB0:
 _08000CC2:
 	ldr r0, [sp]
 	adds r1, r5, #0
-	bl TrkVolPitSet_rev01
+	bl TrkVolPitSet
 	ldr r0, [r5, #4]
 	str r0, [r4, #0x10]
 	ldr r0, [sp, #0x10]
@@ -1163,8 +1163,8 @@ _08000D42:
 _08000D54: .4byte 0x03007FF0
 _08000D58: .4byte gClockTable
 
-	THUMB_FUNC_START ply_endtie_rev01
-ply_endtie_rev01: @ 0x08000D5C
+	THUMB_FUNC_START ply_endtie
+ply_endtie: @ 0x08000D5C
 	push {r4, r5}
 	ldr r2, [r1, #0x40]
 	ldrb r3, [r2]
@@ -1234,8 +1234,8 @@ ld_r3_r2_i_sub_rev: @ 0x08000DBA
 	bx lr
 	.align 2, 0
 
-	THUMB_FUNC_START ply_lfos_rev01
-ply_lfos_rev01: @ 0x08000DC4
+	THUMB_FUNC_START ply_lfos
+ply_lfos: @ 0x08000DC4
 	mov ip, lr
 	bl ld_r3_tp_adr_i_rev
 	strb r3, [r1, #0x19]
@@ -1246,8 +1246,8 @@ _08000DD4:
 	bx ip
 	.align 2, 0
 
-	THUMB_FUNC_START ply_mod_rev01
-ply_mod_rev01: @ 0x08000DD8
+	THUMB_FUNC_START ply_mod
+ply_mod: @ 0x08000DD8
 	mov ip, lr
 	bl ld_r3_tp_adr_i_rev
 	strb r3, [r1, #0x17]

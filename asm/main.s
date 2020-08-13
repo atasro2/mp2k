@@ -383,7 +383,7 @@ _08002698:
 _080026D0: .4byte CurtCurs
 _080026D4: .4byte p_song
 _080026D8: .4byte gMPlayTable
-_080026DC: .4byte song_table
+_080026DC: .4byte gSongTable
 _080026E0:
 	ldrb r1, [r6]
 	lsls r0, r1, #2
@@ -604,7 +604,7 @@ _08002884:
 	cmp r5, #0
 	beq _0800288E
 	adds r0, r5, #0
-	bl SoundMode_rev01
+	bl m4aSoundMode
 _0800288E:
 	bl SongWrite
 	bl ModeWrite
@@ -793,7 +793,7 @@ _08002A24: .4byte KeyRep
 	THUMB_FUNC_START VBlankIntr
 VBlankIntr: @ 0x08002A28
 	push {lr}
-	bl SoundVSync_rev01
+	bl SoundVSync
 	ldr r1, _08002A38
 	movs r0, #1
 	strh r0, [r1]
@@ -1072,7 +1072,7 @@ _08002C28:
 	lsrs r2, r2, #0x10
 	adds r0, r4, #0
 	adds r1, r5, #0
-	bl MPlayVolumeControl
+	bl m4aMPlayVolumeControl
 	b _08002C84
 	.align 2, 0
 _08002C4C: .4byte pbymidi_swi
@@ -1323,7 +1323,7 @@ _08002E32:
 	lsrs r2, r2, #0x10
 	adds r0, r4, #0
 	adds r1, r5, #0
-	bl MPlayVolumeControl
+	bl m4aMPlayVolumeControl
 	b _08002EAE
 	.align 2, 0
 _08002E5C: .4byte pbymidi_swi
@@ -1604,7 +1604,7 @@ _0800301E:
 	b _08003092
 	.align 2, 0
 _08003060: .4byte CurP
-_08003064: .4byte song_table
+_08003064: .4byte gSongTable
 _08003068: .4byte c_song
 _0800306C: .4byte vcount
 _08003070: .4byte p_song
@@ -1743,7 +1743,7 @@ _08003144:
 	.align 2, 0
 _08003184: .4byte c_song
 _08003188: .4byte app_song_table
-_0800318C: .4byte song_table
+_0800318C: .4byte gSongTable
 _08003190: .4byte p_song
 _08003194: .4byte gMPlayTable
 _08003198: .4byte vcount

@@ -163,6 +163,8 @@ $(DATA_ASM_BUILDDIR)/%.o: $(DATA_ASM_SUBDIR)/%.s $$(data_dep)
 
 $(SONG_BUILDDIR)/%.o: $(SONG_SUBDIR)/%.s
 	$(AS) $(ASFLAGS) -I sound -o $@ $<
+	
+$(C_BUILDDIR)/m4a.o: CFLAGS += -fno-gcse
 
 ifeq ($(NODEP),1)
 $(C_BUILDDIR)/%.o: c_dep :=
