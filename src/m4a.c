@@ -62,6 +62,196 @@ void UnusedDummyFunc(void)
 {
 }
 
+void m4aSoundMode(u32 mode)
+{
+    struct SoundInfo *soundInfo = SOUND_INFO_PTR;
+    u32 temp;
+
+    if (soundInfo->ident != ID_NUMBER)
+        return;
+
+    soundInfo->ident++;
+
+    temp = mode & (SOUND_MODE_REVERB_SET | SOUND_MODE_REVERB_VAL);
+
+    if (temp)
+        soundInfo->reverb = temp & SOUND_MODE_REVERB_VAL;
+
+    temp = mode & SOUND_MODE_MAXCHN;
+
+    if (temp)
+    {
+        struct SoundChannel *chan;
+
+        soundInfo->maxChans = temp >> SOUND_MODE_MAXCHN_SHIFT;
+
+        temp = MAX_DIRECTSOUND_CHANNELS;
+        chan = &soundInfo->chans[0];
+
+        while (temp != 0)
+        {
+            chan->status = 0;
+            temp--;
+            chan++;
+        }
+    }
+
+    temp = mode & SOUND_MODE_MASVOL;
+
+    if (temp)
+        soundInfo->masterVolume = temp >> SOUND_MODE_MASVOL_SHIFT;
+
+    temp = mode & SOUND_MODE_DA_BIT;
+
+    if (temp)
+    {
+        temp = (temp & 0x300000) >> 14;
+        REG_SOUNDBIAS_H = (REG_SOUNDBIAS_H & 0x3F) | temp;
+    }
+
+    temp = mode & SOUND_MODE_FREQ;
+
+    if (temp)
+    {
+        m4aSoundVSyncOff();
+        SampleFreqSet(temp);
+    }
+
+    soundInfo->ident = ID_NUMBER;
+}
+
+void SoundClear(void)
+{
+    struct SoundInfo *soundInfo = SOUND_INFO_PTR;
+    s32 i;
+    void *chan;
+
+    if (soundInfo->ident != ID_NUMBER)
+        return;
+
+    soundInfo->ident++;
+
+    i = MAX_DIRECTSOUND_CHANNELS;
+    chan = &soundInfo->chans[0];
+
+    while (i > 0)
+    {
+        ((struct SoundChannel *)chan)->status = 0;
+        i--;
+        chan = (void *)((s32)chan + sizeof(struct SoundChannel));
+    }
+
+    chan = soundInfo->cgbChans;
+
+    if (chan)
+    {
+        i = 1;
+
+        while (i <= 4)
+        {
+            soundInfo->CgbOscOff(i);
+            ((struct CgbChannel *)chan)->sf = 0;
+            i++;
+            chan = (void *)((s32)chan + sizeof(struct CgbChannel));
+        }
+    }
+
+    soundInfo->ident = ID_NUMBER;
+}
+
+void m4aSoundVSyncOff(void)
+{
+    struct SoundInfo *soundInfo = SOUND_INFO_PTR;
+
+    if (soundInfo->ident >= ID_NUMBER && soundInfo->ident <= ID_NUMBER + 1)
+    {
+        soundInfo->ident += 10;
+
+        if (REG_DMA1CNT & (DMA_REPEAT << 16))
+            REG_DMA1CNT = ((DMA_ENABLE | DMA_START_NOW | DMA_32BIT | DMA_SRC_INC | DMA_DEST_FIXED) << 16) | 4;
+
+        if (REG_DMA2CNT & (DMA_REPEAT << 16))
+            REG_DMA2CNT = ((DMA_ENABLE | DMA_START_NOW | DMA_32BIT | DMA_SRC_INC | DMA_DEST_FIXED) << 16) | 4;
+
+        REG_DMA1CNT_H = DMA_32BIT;
+        REG_DMA2CNT_H = DMA_32BIT;
+
+        CpuFill32(0, soundInfo->pcmBuffer, sizeof(soundInfo->pcmBuffer));
+    }
+}
+
+void m4aSoundVSyncOn(void)
+{
+    struct SoundInfo *soundInfo = SOUND_INFO_PTR;
+    u32 ident = soundInfo->ident;
+
+    if (ident == ID_NUMBER)
+        return;
+
+    REG_DMA1CNT_H = DMA_ENABLE | DMA_START_SPECIAL | DMA_32BIT | DMA_REPEAT;
+    REG_DMA2CNT_H = DMA_ENABLE | DMA_START_SPECIAL | DMA_32BIT | DMA_REPEAT;
+
+    soundInfo->pcmDmaCounter = 0;
+    soundInfo->ident = ident - 10;
+}
+
+//void MPlayStart(struct MusicPlayerInfo *mplayInfo, struct SongHeader *songHeader)
+//{
+//    s32 i;
+//    u8 unk_B;
+//    struct MusicPlayerTrack *track;
+//
+//    if (mplayInfo->ident != ID_NUMBER)
+//        return;
+//
+//    unk_B = mplayInfo->unk_B;
+//
+//    if (!unk_B
+//        || ((!mplayInfo->songHeader || !(mplayInfo->tracks[0].flags & MPT_FLG_START))
+//            && ((mplayInfo->status & MUSICPLAYER_STATUS_TRACK) == 0
+//                || (mplayInfo->status & MUSICPLAYER_STATUS_PAUSE)))
+//        || (mplayInfo->priority <= songHeader->priority))
+//    {
+//        mplayInfo->ident++;
+//        mplayInfo->status = 0;
+//        mplayInfo->songHeader = songHeader;
+//        mplayInfo->tone = songHeader->tone;
+//        mplayInfo->priority = songHeader->priority;
+//        mplayInfo->clock = 0;
+//        mplayInfo->tempoD = 150;
+//        mplayInfo->tempoI = 150;
+//        mplayInfo->tempoU = 0x100;
+//        mplayInfo->tempoC = 0;
+//        mplayInfo->fadeOI = 0;
+//
+//        i = 0;
+//        track = mplayInfo->tracks;
+//
+//        while (i < songHeader->trackCount && i < mplayInfo->trackCount)
+//        {
+//            TrackStop(mplayInfo, track);
+//            track->flags = MPT_FLG_EXIST | MPT_FLG_START;
+//            track->chan = 0;
+//            track->cmdPtr = songHeader->part[i];
+//            i++;
+//            track++;
+//        }
+//
+//        while (i < mplayInfo->trackCount)
+//        {
+//            TrackStop(mplayInfo, track);
+//            track->flags = 0;
+//            i++;
+//            track++;
+//        }
+//
+//        if (songHeader->reverb & 0x80)
+//            m4aSoundMode(songHeader->reverb);
+//
+//        mplayInfo->ident = ID_NUMBER;
+//    }
+//}
+
 void m4aMPlayStop(struct MusicPlayerInfo *mplayInfo)
 {
     s32 i;

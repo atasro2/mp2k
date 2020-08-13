@@ -37,7 +37,7 @@ void * const gMPlayJumpTableTemplate[] =
     ply_port,
     ply_fine,
     ply_endtie_rev01,
-    SampleFreqSet_rev01,
+    SampleFreqSet,
     TrackStop,
     FadeOutBody,
     TrkVolPitSet,

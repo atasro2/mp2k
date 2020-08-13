@@ -20,7 +20,7 @@ m4aSoundInit: @ 0x08000E90
 	ldr r0, _08000EF4
 	bl MPlayExtender
 	ldr r0, _08000EF8
-	bl SoundMode_rev01
+	bl m4aSoundMode
 	ldr r0, _08000EFC
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
@@ -81,7 +81,7 @@ m4aSongNumStart: @ 0x08000F14
 	ldr r2, [r1]
 	ldr r1, [r0]
 	adds r0, r2, #0
-	bl MPlayStart_rev01
+	bl MPlayStart
 	pop {r0}
 	bx r0
 	.align 2, 0
@@ -108,7 +108,7 @@ m4aSongNumStartOrChange: @ 0x08000F40
 	beq _08000F74
 	adds r0, r1, #0
 	adds r1, r2, #0
-	bl MPlayStart_rev01
+	bl MPlayStart
 	b _08000F88
 	.align 2, 0
 _08000F6C: .4byte gMPlayTable
@@ -123,7 +123,7 @@ _08000F74:
 _08000F80:
 	adds r0, r1, #0
 	adds r1, r3, #0
-	bl MPlayStart_rev01
+	bl MPlayStart
 _08000F88:
 	pop {r0}
 	bx r0
@@ -148,7 +148,7 @@ m4aSongNumStartOrContinue: @ 0x08000F8C
 	beq _08000FC0
 	adds r0, r1, #0
 	adds r1, r2, #0
-	bl MPlayStart_rev01
+	bl MPlayStart
 	b _08000FDC
 	.align 2, 0
 _08000FB8: .4byte gMPlayTable
@@ -160,7 +160,7 @@ _08000FC0:
 	bne _08000FD2
 	adds r0, r1, #0
 	adds r1, r3, #0
-	bl MPlayStart_rev01
+	bl MPlayStart
 	b _08000FDC
 _08000FD2:
 	cmp r2, #0
@@ -490,7 +490,7 @@ _08001230: .4byte ply_lfos_rev01+1
 _08001234: .4byte ply_mod_rev01+1
 _08001238: .4byte ply_xcmd+1
 _0800123C: .4byte ply_endtie_rev01+1
-_08001240: .4byte SampleFreqSet_rev01+1
+_08001240: .4byte SampleFreqSet+1
 _08001244: .4byte TrackStop+1
 _08001248: .4byte FadeOutBody+1
 _0800124C: .4byte TrkVolPitSet+1
@@ -612,7 +612,7 @@ _080012BA:
 	str r4, [r5, #0x34]
 	movs r0, #0x80
 	lsls r0, r0, #0xb
-	bl SampleFreqSet_rev01
+	bl SampleFreqSet
 	ldr r0, _08001384
 	str r0, [r5]
 	add sp, #4
@@ -638,8 +638,8 @@ _0800137C: .4byte DummyFunc+1
 _08001380: .4byte gMPlayJumpTable
 _08001384: .4byte 0x68736D53
 
-	THUMB_FUNC_START SampleFreqSet_rev01
-SampleFreqSet_rev01: @ 0x08001388
+	THUMB_FUNC_START SampleFreqSet
+SampleFreqSet: @ 0x08001388
 	push {r4, r5, r6, lr}
 	adds r2, r0, #0
 	ldr r0, _08001408
@@ -682,7 +682,7 @@ SampleFreqSet_rev01: @ 0x08001388
 	bl __divsi3
 	rsbs r0, r0, #0
 	strh r0, [r4]
-	bl SoundVSyncOn_rev01
+	bl m4aSoundVSyncOn
 	ldr r1, _08001428
 _080013EC:
 	ldrb r0, [r1]
@@ -710,226 +710,6 @@ _0800141C: .4byte 0x04000102
 _08001420: .4byte 0x04000100
 _08001424: .4byte 0x00044940
 _08001428: .4byte 0x04000006
-
-	THUMB_FUNC_START SoundMode_rev01
-SoundMode_rev01: @ 0x0800142C
-	push {r4, r5, lr}
-	adds r3, r0, #0
-	ldr r0, _080014B8
-	ldr r5, [r0]
-	ldr r1, [r5]
-	ldr r0, _080014BC
-	cmp r1, r0
-	bne _080014B2
-	adds r0, r1, #1
-	str r0, [r5]
-	movs r4, #0xff
-	ands r4, r3
-	cmp r4, #0
-	beq _0800144E
-	movs r0, #0x7f
-	ands r4, r0
-	strb r4, [r5, #5]
-_0800144E:
-	movs r4, #0xf0
-	lsls r4, r4, #4
-	ands r4, r3
-	cmp r4, #0
-	beq _0800146E
-	lsrs r0, r4, #8
-	strb r0, [r5, #6]
-	movs r4, #0xc
-	adds r0, r5, #0
-	adds r0, #0x50
-	movs r1, #0
-_08001464:
-	strb r1, [r0]
-	subs r4, #1
-	adds r0, #0x40
-	cmp r4, #0
-	bne _08001464
-_0800146E:
-	movs r4, #0xf0
-	lsls r4, r4, #8
-	ands r4, r3
-	cmp r4, #0
-	beq _0800147C
-	lsrs r0, r4, #0xc
-	strb r0, [r5, #7]
-_0800147C:
-	movs r4, #0xb0
-	lsls r4, r4, #0x10
-	ands r4, r3
-	cmp r4, #0
-	beq _0800149A
-	movs r0, #0xc0
-	lsls r0, r0, #0xe
-	ands r0, r4
-	lsrs r4, r0, #0xe
-	ldr r2, _080014C0
-	ldrb r1, [r2]
-	movs r0, #0x3f
-	ands r0, r1
-	orrs r0, r4
-	strb r0, [r2]
-_0800149A:
-	movs r4, #0xf0
-	lsls r4, r4, #0xc
-	ands r4, r3
-	cmp r4, #0
-	beq _080014AE
-	bl SoundVSyncOff_rev01
-	adds r0, r4, #0
-	bl SampleFreqSet_rev01
-_080014AE:
-	ldr r0, _080014BC
-	str r0, [r5]
-_080014B2:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080014B8: .4byte 0x03007FF0
-_080014BC: .4byte 0x68736D53
-_080014C0: .4byte 0x04000089
-
-	THUMB_FUNC_START SoundClear_rev01
-SoundClear_rev01: @ 0x080014C4
-	push {r4, r5, r6, r7, lr}
-	ldr r0, _08001510
-	ldr r6, [r0]
-	ldr r1, [r6]
-	ldr r0, _08001514
-	cmp r1, r0
-	bne _0800150A
-	adds r0, r1, #1
-	str r0, [r6]
-	movs r5, #0xc
-	adds r4, r6, #0
-	adds r4, #0x50
-	movs r0, #0
-_080014DE:
-	strb r0, [r4]
-	subs r5, #1
-	adds r4, #0x40
-	cmp r5, #0
-	bgt _080014DE
-	ldr r4, [r6, #0x1c]
-	cmp r4, #0
-	beq _08001506
-	movs r5, #1
-	movs r7, #0
-_080014F2:
-	lsls r0, r5, #0x18
-	lsrs r0, r0, #0x18
-	ldr r1, [r6, #0x2c]
-	bl _call_via_r1
-	strb r7, [r4]
-	adds r5, #1
-	adds r4, #0x40
-	cmp r5, #4
-	ble _080014F2
-_08001506:
-	ldr r0, _08001514
-	str r0, [r6]
-_0800150A:
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08001510: .4byte 0x03007FF0
-_08001514: .4byte 0x68736D53
-
-	THUMB_FUNC_START SoundVSyncOff_rev01
-SoundVSyncOff_rev01: @ 0x08001518
-	push {lr}
-	sub sp, #4
-	ldr r0, _08001578
-	ldr r2, [r0]
-	ldr r1, [r2]
-	ldr r3, _0800157C
-	adds r0, r1, r3
-	cmp r0, #1
-	bhi _08001570
-	adds r0, r1, #0
-	adds r0, #0xa
-	str r0, [r2]
-	ldr r1, _08001580
-	ldr r0, [r1]
-	movs r3, #0x80
-	lsls r3, r3, #0x12
-	ands r0, r3
-	cmp r0, #0
-	beq _08001542
-	ldr r0, _08001584
-	str r0, [r1]
-_08001542:
-	ldr r1, _08001588
-	ldr r0, [r1]
-	ands r0, r3
-	cmp r0, #0
-	beq _08001550
-	ldr r0, _08001584
-	str r0, [r1]
-_08001550:
-	ldr r0, _0800158C
-	movs r3, #0x80
-	lsls r3, r3, #3
-	adds r1, r3, #0
-	strh r1, [r0]
-	adds r0, #0xc
-	strh r1, [r0]
-	movs r0, #0
-	str r0, [sp]
-	movs r0, #0xd4
-	lsls r0, r0, #2
-	adds r1, r2, r0
-	ldr r2, _08001590
-	mov r0, sp
-	bl CpuSet
-_08001570:
-	add sp, #4
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08001578: .4byte 0x03007FF0
-_0800157C: .4byte 0x978C92AD
-_08001580: .4byte 0x040000C4
-_08001584: .4byte 0x84400004
-_08001588: .4byte 0x040000D0
-_0800158C: .4byte 0x040000C6
-_08001590: .4byte 0x05000318
-
-	THUMB_FUNC_START SoundVSyncOn_rev01
-SoundVSyncOn_rev01: @ 0x08001594
-	push {r4, lr}
-	ldr r0, _080015C4
-	ldr r2, [r0]
-	ldr r3, [r2]
-	ldr r0, _080015C8
-	cmp r3, r0
-	beq _080015BC
-	ldr r0, _080015CC
-	movs r4, #0xb6
-	lsls r4, r4, #8
-	adds r1, r4, #0
-	strh r1, [r0]
-	adds r0, #0xc
-	strh r1, [r0]
-	ldrb r0, [r2, #4]
-	movs r0, #0
-	strb r0, [r2, #4]
-	adds r0, r3, #0
-	subs r0, #0xa
-	str r0, [r2]
-_080015BC:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080015C4: .4byte 0x03007FF0
-_080015C8: .4byte 0x68736D53
-_080015CC: .4byte 0x040000C6
 
 	THUMB_FUNC_START MPlayOpen_rev01
 MPlayOpen_rev01: @ 0x080015D0
@@ -995,8 +775,8 @@ _0800163C: .4byte 0x03007FF0
 _08001640: .4byte 0x68736D53
 _08001644: .4byte MPlayMain_rev01+1
 
-	THUMB_FUNC_START MPlayStart_rev01
-MPlayStart_rev01: @ 0x08001648
+	THUMB_FUNC_START MPlayStart
+MPlayStart: @ 0x08001648
 	push {r4, r5, r6, r7, lr}
 	mov r7, r8
 	push {r7}
@@ -1105,7 +885,7 @@ _0800170A:
 	cmp r0, #0
 	beq _0800171A
 	ldrb r0, [r7, #3]
-	bl SoundMode_rev01
+	bl m4aSoundMode
 _0800171A:
 	ldr r0, _08001728
 	str r0, [r5, #0x34]

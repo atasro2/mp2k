@@ -604,7 +604,7 @@ _08002884:
 	cmp r5, #0
 	beq _0800288E
 	adds r0, r5, #0
-	bl SoundMode_rev01
+	bl m4aSoundMode
 _0800288E:
 	bl SongWrite
 	bl ModeWrite
